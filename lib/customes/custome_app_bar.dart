@@ -5,7 +5,11 @@ class CustomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final IconData? leadingIcon;
   final Function? onLeadingIconPressed;
 
-  CustomeAppBar({this.title = '', this.leadingIcon = Icons.menu, this.onLeadingIconPressed});
+  const CustomeAppBar(
+      {super.key,
+      this.title = '',
+      this.leadingIcon = Icons.menu,
+      this.onLeadingIconPressed});
 
   @override
   Widget build(BuildContext context) {

@@ -34,7 +34,8 @@ class ProductCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         product.categoryId,
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ],
                   ),
@@ -42,14 +43,16 @@ class ProductCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'الشراء: ${product.purchasePrice.toStringAsFixed(1)}\₪',
+                        'الشراء: ${product.purchasePrice.toStringAsFixed(1)}₪',
                         style: const TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'البيع: ${product.salePrice.toStringAsFixed(1)}\₪',
-                        style: const TextStyle(fontSize: 14, color: Color.fromRGBO(33, 157, 188, 1)),
+                        'البيع: ${product.salePrice.toStringAsFixed(1)}₪',
+                        style: const TextStyle(
+                            fontSize: 14,
+                            color: Color.fromRGBO(33, 157, 188, 1)),
                       ),
                     ],
                   ),

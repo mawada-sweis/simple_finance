@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:simple_finance/home_screen.dart';
 
 class CustomBottomBar extends StatelessWidget {
+  const CustomBottomBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -15,7 +17,7 @@ class CustomBottomBar extends StatelessWidget {
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         },
       ),

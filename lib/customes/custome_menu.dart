@@ -4,13 +4,14 @@ class CustomMenu extends StatefulWidget {
   final bool isOpen;
   final Function onClose;
 
-  CustomMenu({required this.isOpen, required this.onClose});
+  const CustomMenu({super.key, required this.isOpen, required this.onClose});
 
   @override
-  _CustomMenuState createState() => _CustomMenuState();
+  CustomMenuState createState() => CustomMenuState();
 }
 
-class _CustomMenuState extends State<CustomMenu> with SingleTickerProviderStateMixin {
+class CustomMenuState extends State<CustomMenu>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
 
@@ -25,7 +26,7 @@ class _CustomMenuState extends State<CustomMenu> with SingleTickerProviderStateM
 
     _offsetAnimation = Tween<Offset>(
       begin: const Offset(1.0, 0.0), // Start off-screen to the right
-      end: const Offset(0.0, 0.0),   // Slide to on-screen
+      end: const Offset(0.0, 0.0), // Slide to on-screen
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
@@ -64,7 +65,7 @@ class _CustomMenuState extends State<CustomMenu> with SingleTickerProviderStateM
               color: Colors.black.withOpacity(0.05),
             ),
           ),
-        
+
         // The sliding menu
         SlideTransition(
           position: _offsetAnimation,

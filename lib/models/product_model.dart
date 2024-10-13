@@ -12,7 +12,6 @@ class Product {
   final int initialQuantity;
   final String note;
 
-  // Constructor
   Product({
     required this.id,
     required this.name,
@@ -28,29 +27,49 @@ class Product {
     required this.note,
   });
 
-  // Factory method to convert Firestore data to a Product object
+  // Convert Firestore data to Product model
   factory Product.fromFirestore(Map<String, dynamic> data, String id) {
     return Product(
       id: id,
-      name: data['name'] ?? 'لا يوجد اسم',
-      categoryId: data['category_id'] ?? 'لا يوجد تصنيف',
-      color: data['color'] ?? 'لا يوجد لون',
-      purchasePrice: (data['purchase_price'] != null)
-          ? data['purchase_price'].toDouble()
-          : 0.0,
-      salePrice:
-          (data['sale_price'] != null) ? data['sale_price'].toDouble() : 0.0,
-      averageCost: (data['average_cost'] != null)
-          ? data['average_cost'].toDouble()
-          : 0.0,
-      size: data['size'] ?? 'لا يوجد حجم',
+      name: (data['name'] != "NA")
+          ? data['name'] ?? 'لا يوجد اسم'
+          : 'لا يوجد اسم',
+      categoryId: (data['category_id'] != "NA")
+          ? data['category_id'] ?? 'لا يوجد تصنيف'
+          : 'لا يوجد تصنيف',
+      color: (data['color'] != "NA")
+          ? data['color'] ?? 'لا يوجد لون'
+          : 'لا يوجد لون',
+
+      // Check if value is "NA", if so, return -1.0, otherwise convert to double
+      purchasePrice:
+          (data['purchase_price'] != "NA" && data['purchase_price'] is num)
+              ? (data['purchase_price'] as num).toDouble()
+              : -1.0,
+      salePrice: (data['sale_price'] != "NA" && data['sale_price'] is num)
+          ? (data['sale_price'] as num).toDouble()
+          : -1.0,
+      averageCost: (data['average_cost'] != "NA" && data['average_cost'] is num)
+          ? (data['average_cost'] as num).toDouble()
+          : -1.0,
+
+      size: (data['size'] != "NA")
+          ? data['size'] ?? 'لا يوجد حجم'
+          : 'لا يوجد حجم',
       stockQuantity:
-          (data['stock_quantity'] != null) ? data['stock_quantity'].toInt() : 0,
-      supplierId: data['supplier_id'] ?? 'لا يوجد مورد',
-      initialQuantity: (data['initial_quantity'] != null)
-          ? data['initial_quantity'].toInt()
-          : 0,
-      note: data['note'] ?? 'لا يوجد ملاحظة',
+          (data['stock_quantity'] != "NA" && data['stock_quantity'] is int)
+              ? data['stock_quantity'] as int
+              : -1,
+      supplierId: (data['supplier_id'] != "NA")
+          ? data['supplier_id'] ?? 'لا يوجد مورد'
+          : 'لا يوجد مورد',
+      initialQuantity:
+          (data['initial_quantity'] != "NA" && data['initial_quantity'] is int)
+              ? data['initial_quantity'] as int
+              : -1,
+      note: (data['note'] != "NA")
+          ? data['note'] ?? 'لا يوجد ملاحظة'
+          : 'لا يوجد ملاحظة',
     );
   }
 }
