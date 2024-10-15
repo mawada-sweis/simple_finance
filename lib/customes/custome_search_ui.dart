@@ -9,6 +9,7 @@ Widget buildSearchUI({
   required String selectedField,
   required VoidCallback toggleRecentSearches,
   required BuildContext context,
+  required VoidCallback onClearSearch,
 }) {
   return Column(
     children: [
@@ -46,6 +47,10 @@ Widget buildSearchUI({
                   toggleRecentSearches();
                 },
               ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: onClearSearch,
             ),
             DropdownButton<String>(
               value: selectedField,

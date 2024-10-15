@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_finance/home_screen.dart';
+import 'package:simple_finance/screens/home_page_screen.dart';
 
 class CustomBottomBar extends StatelessWidget {
   const CustomBottomBar({super.key});

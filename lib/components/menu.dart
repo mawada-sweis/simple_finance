@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_finance/models/product_model.dart';
 
 class CustomMenu extends StatefulWidget {
   final bool isOpen;
@@ -75,21 +76,26 @@ class CustomMenuState extends State<CustomMenu>
               width: MediaQuery.of(context).size.width * 0.50,
               height: double.infinity,
               color: Colors.white,
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('قائمة 1', style: TextStyle(fontSize: 18)),
+                    padding: const EdgeInsets.all(16.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/products', arguments: {
+                          'searchResults': <Product>[],
+                        });
+                        widget.onClose();
+                      },
+                      child: const Text('المنتجات',
+                          style: TextStyle(fontSize: 18)),
+                    ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('قائمة 2', style: TextStyle(fontSize: 18)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('قائمة 3', style: TextStyle(fontSize: 18)),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.all(16.0),
+                  //   child: Text('قائمة 2', style: TextStyle(fontSize: 18)),
+                  // ),
                 ],
               ),
             ),

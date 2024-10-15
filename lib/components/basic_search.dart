@@ -9,6 +9,7 @@ class BasicSearch extends StatelessWidget {
   final String selectedField;
   final Function(String?) onFieldChange;
   final VoidCallback toggleRecentSearches;
+  final VoidCallback onClearSearch;
 
   const BasicSearch({
     super.key,
@@ -19,6 +20,7 @@ class BasicSearch extends StatelessWidget {
     required this.selectedField,
     required this.onFieldChange,
     required this.toggleRecentSearches,
+    required this.onClearSearch,
   });
 
   @override
@@ -31,6 +33,7 @@ class BasicSearch extends StatelessWidget {
       recentSearches: recentSearches,
       selectedField: selectedField,
       toggleRecentSearches: toggleRecentSearches,
+      onClearSearch: onClearSearch,
       context: context,
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:simple_finance/home_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +36,8 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [Locale('ar', '')],
       locale: const Locale('ar', ''),
-      home: const HomeScreen(),
+      initialRoute: '/',
+      routes: getAppRoutes(),
     );
   }
 }
