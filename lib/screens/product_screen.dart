@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_finance/components/menu.dart';
+import 'package:simple_finance/screens/product_detail_screen.dart';
 import '../models/product_model.dart';
 import '../components/product_card.dart';
 import '../components/app_bar.dart';
@@ -223,27 +224,46 @@ class ProductScreenState extends State<ProductScreen> {
               ),
               Expanded(
                 child: _isLoading && _products.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(
+                        child:
+                            CircularProgressIndicator()) // Show indicator when loading and no products
                     : _products.isNotEmpty
-                        ? ListView.builder(
-                            controller: _scrollController,
-                            itemCount: _products.length + (_hasMore ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (index == _products.length) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
+                        ? NotificationListener<ScrollNotification>(
+                            onNotification: (ScrollNotification scrollInfo) {
+                              // Only load more products if there is no active search query
+                              if (scrollInfo.metrics.pixels ==
+                                      scrollInfo.metrics.maxScrollExtent &&
+                                  !_isLoading &&
+                                  _hasMore &&
+                                  _searchQuery.isEmpty) {
+                                _loadProducts(); // Load more products when scrolling to the end
                               }
-
-                              final product = _products[index];
-                              return ProductCard(
-                                product: product,
-                                onTap: (selectedProduct) {
-                                  // Navigate to the ProductDetailScreen or handle card tap
-                                },
-                              );
+                              return false;
                             },
+                            child: ListView.builder(
+                              itemCount: _products.length,
+                              itemBuilder: (context, index) {
+                                // Product card to display each product
+                                final product = _products[index];
+                                return ProductCard(
+                                  product: product,
+                                  onTap: (selectedProduct) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProductDetailScreen(
+                                                product: selectedProduct),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           )
-                        : const Center(child: Text('لا توجد منتجات')),
+                        : const Center(
+                            child: Text(
+                                'لا توجد منتجات')), // Show this message when no products are available at all
               ),
             ],
           ),
