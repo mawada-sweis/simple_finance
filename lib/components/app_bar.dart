@@ -6,7 +6,10 @@ class CustomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function? onLeadingIconPressed;
   final bool showReturnIcon;
   final Function? onReturnPressed;
-  
+  final bool showEditIcon;
+  final Function? onEditPressed;
+  final bool isEditing;
+
   const CustomeAppBar({
     super.key,
     this.title = '',
@@ -14,6 +17,9 @@ class CustomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onLeadingIconPressed,
     this.showReturnIcon = false,
     this.onReturnPressed,
+    this.showEditIcon = false,
+    this.onEditPressed,
+    this.isEditing = false,
   });
 
   @override
@@ -29,20 +35,25 @@ class CustomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: Text(title),
       centerTitle: true,
-      actions: showReturnIcon
-          ? [
-              IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                onPressed: () {
-                  if (onReturnPressed != null) {
-                    onReturnPressed!();
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-            ]
-          : null,
+      actions: [
+        IconButton(
+          icon: Icon(isEditing ? Icons.save : Icons.edit),
+          onPressed: () {
+            if (onEditPressed != null) {
+              onEditPressed!();
+            }
+          },
+        ),
+        if (showReturnIcon)
+          IconButton(
+            icon: const Icon(Icons.arrow_forward),
+            onPressed: () {
+              if (onReturnPressed != null) {
+                onReturnPressed!();
+              }
+            },
+          ),
+      ],
     );
   }
 

@@ -93,7 +93,6 @@ class ProductScreenState extends State<ProductScreen> {
 
       if (snapshot.docs.length < _limit) {
         _hasMore = false;
-        _isLoading = false;
       }
 
       if (snapshot.docs.isNotEmpty) {
@@ -248,6 +247,14 @@ class ProductScreenState extends State<ProductScreen> {
                                 return ProductCard(
                                   product: product,
                                   onTap: (selectedProduct) {
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) =>
+                                    //         ProductDetailScreen(
+                                    //             product: selectedProduct),
+                                    //   ),
+                                    // );
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -255,7 +262,20 @@ class ProductScreenState extends State<ProductScreen> {
                                             ProductDetailScreen(
                                                 product: selectedProduct),
                                       ),
-                                    );
+                                    ).then((updatedProduct) {
+                                      if (updatedProduct != null) {
+                                        // Find the index of the updated product
+                                        int index = _products.indexWhere(
+                                            (p) => p.id == updatedProduct.id);
+
+                                        if (index != -1) {
+                                          setState(() {
+                                            // Replace the old product with the updated one
+                                            _products[index] = updatedProduct;
+                                          });
+                                        }
+                                      }
+                                    });
                                   },
                                 );
                               },
