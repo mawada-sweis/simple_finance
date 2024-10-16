@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_finance/components/delete_confirmation_dialog.dart';
 import 'package:simple_finance/components/menu.dart';
 import '../models/product_model.dart';
 import '../components/app_bar.dart';
@@ -143,6 +144,37 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
     });
   }
 
+  Future<void> _deleteProduct() async {
+    try {
+      // Delete the product from Firestore
+      await FirebaseFirestore.instance
+          .collection('products')
+          .doc(widget.product.id)
+          .delete();
+
+      // Navigate back to ProductScreen with a success message
+      Navigator.pop(context, 'deleted');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم حذف المنتج بنجاح')),
+      );
+    } catch (e) {
+      logger.e('Error deleting product: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('فشل في حذف المنتج')),
+      );
+    }
+  }
+
+  void _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DeleteConfirmationDialog(onConfirmDelete: _deleteProduct);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,8 +186,11 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
         onReturnPressed: () {
           Navigator.pop(context);
         },
+        showEditIcon: true,
         onEditPressed: _toggleEditMode,
         isEditing: _isEditing,
+        showDeleteIcon: true,
+        onDeletePressed: _showDeleteConfirmationDialog,
       ),
       body: Stack(
         children: [

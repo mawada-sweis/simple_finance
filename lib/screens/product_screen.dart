@@ -247,14 +247,6 @@ class ProductScreenState extends State<ProductScreen> {
                                 return ProductCard(
                                   product: product,
                                   onTap: (selectedProduct) {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) =>
-                                    //         ProductDetailScreen(
-                                    //             product: selectedProduct),
-                                    //   ),
-                                    // );
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -262,16 +254,20 @@ class ProductScreenState extends State<ProductScreen> {
                                             ProductDetailScreen(
                                                 product: selectedProduct),
                                       ),
-                                    ).then((updatedProduct) {
-                                      if (updatedProduct != null) {
-                                        // Find the index of the updated product
+                                    ).then((result) {
+                                      if (result == 'deleted') {
+                                        // Remove the product from the list if it was deleted
+                                        setState(() {
+                                          _products.removeWhere((product) =>
+                                              product.id == selectedProduct.id);
+                                        });
+                                      } else if (result != null) {
+                                        // Handle product update if any
                                         int index = _products.indexWhere(
-                                            (p) => p.id == updatedProduct.id);
-
+                                            (p) => p.id == result.id);
                                         if (index != -1) {
                                           setState(() {
-                                            // Replace the old product with the updated one
-                                            _products[index] = updatedProduct;
+                                            _products[index] = result;
                                           });
                                         }
                                       }
