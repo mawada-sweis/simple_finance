@@ -92,10 +92,17 @@ class CustomMenuState extends State<CustomMenu>
                           style: TextStyle(fontSize: 18)),
                     ),
                   ),
-                  // Padding(
-                  //   padding: EdgeInsets.all(16.0),
-                  //   child: Text('قائمة 2', style: TextStyle(fontSize: 18)),
-                  // ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/users');
+                        widget.onClose();
+                      },
+                      child: const Text('قائمة الأشخاص',
+                          style: TextStyle(fontSize: 18)),
+                    ),
+                  ),
                 ],
               ),
             ),

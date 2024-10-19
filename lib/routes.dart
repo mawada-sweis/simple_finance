@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_finance/screens/home_page_screen.dart';
 import 'package:simple_finance/screens/product_screen.dart';
+import 'package:simple_finance/screens/users_screen.dart';
 import '../models/product_model.dart';
 
 // Function that generates the routes
@@ -13,5 +14,6 @@ Map<String, WidgetBuilder> getAppRoutes() {
       List<Product> searchResults = arguments['searchResults'];
       return ProductScreen(searchResults: searchResults);
     },
+    '/users': (context) => const UsersScreen(),
   };
 }

@@ -242,7 +242,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> {
           },
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.grey[200],
+            fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
