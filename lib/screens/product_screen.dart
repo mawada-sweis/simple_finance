@@ -125,8 +125,8 @@ class ProductScreenState extends State<ProductScreen> {
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('products')
-          .where('name', isGreaterThanOrEqualTo: query)
-          .where('name', isLessThanOrEqualTo: '$query\uf8ff')
+          .where(_selectedField, isGreaterThanOrEqualTo: query)
+          .where(_selectedField, isLessThanOrEqualTo: '$query\uf8ff')
           .get();
 
       List<Product> products = snapshot.docs.map((doc) {
