@@ -31,15 +31,10 @@ class Product {
   factory Product.fromFirestore(Map<String, dynamic> data, String id) {
     return Product(
       id: id,
-      name: (data['name'] != "NA")
-          ? data['name'] ?? 'لا يوجد اسم'
-          : 'لا يوجد اسم',
-      categoryId: (data['category_id'] != "NA")
-          ? data['category_id'] ?? 'لا يوجد تصنيف'
-          : 'لا يوجد تصنيف',
-      color: (data['color'] != "NA")
-          ? data['color'] ?? 'لا يوجد لون'
-          : 'لا يوجد لون',
+      name: (data['name'] != "NA") ? data['name'] ?? 'ل' : 'ل',
+      categoryId:
+          (data['category_id'] != "NA") ? data['category_id'] ?? 'ل' : 'ل',
+      color: (data['color'] != "NA") ? data['color'] ?? 'ل' : 'ل',
 
       // Check if value is "NA", if so, return -1.0, otherwise convert to double
       purchasePrice:
@@ -53,23 +48,18 @@ class Product {
           ? (data['average_cost'] as num).toDouble()
           : -1.0,
 
-      size: (data['size'] != "NA")
-          ? data['size'] ?? 'لا يوجد حجم'
-          : 'لا يوجد حجم',
+      size: (data['size'] != "NA") ? data['size'] ?? 'ل' : 'ل',
       stockQuantity:
           (data['stock_quantity'] != "NA" && data['stock_quantity'] is int)
               ? data['stock_quantity'] as int
               : -1,
-      supplierId: (data['supplier_id'] != "NA")
-          ? data['supplier_id'] ?? 'لا يوجد مورد'
-          : 'لا يوجد مورد',
+      supplierId:
+          (data['supplier_id'] != "NA") ? data['supplier_id'] ?? 'ل' : 'ل',
       initialQuantity:
           (data['initial_quantity'] != "NA" && data['initial_quantity'] is int)
               ? data['initial_quantity'] as int
               : -1,
-      note: (data['note'] != "NA")
-          ? data['note'] ?? 'لا يوجد ملاحظة'
-          : 'لا يوجد ملاحظة',
+      note: (data['note'] != "NA") ? data['note'] ?? 'ل' : 'ل',
     );
   }
 }

@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'routes.dart';
+import 'package:simple_finance/view_models/app_bar_view_model.dart';
+import 'package:simple_finance/view_models/menu_view_model.dart';
+import 'package:simple_finance/view_models/product_view_model.dart';
+import 'utils/theme.dart';
+import 'view_models/search_view_model.dart';
+import 'views/screens/home_page_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SearchViewModel()),
+        ChangeNotifierProvider(create: (_) => AppBarViewModel()),
+        ChangeNotifierProvider(create: (_) => MenuViewModel()),
+        ChangeNotifierProvider(create: (_) => ProductViewModel()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,29 +31,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Simple Finance App',
-      theme: ThemeData(
-        // primaryColorLight: Color.fromRGBO(33, 158, 188, 100),
-        colorScheme: const ColorScheme(
-            brightness: Brightness.light,
-            primary: Color.fromRGBO(2, 48, 71, 1),
-            onPrimary: Color(0xFFFFFFFF),
-            secondary: Color.fromRGBO(251, 133, 0, 100),
-            onSecondary: Color(0xFFFFFFFF),
-            error: Color.fromRGBO(193, 18, 30, 1),
-            onError: Color(0xFFFFFFFF),
-            surface: Color.fromRGBO(247, 241, 237, 1),
-            onSurface: Color(0xFF000000)),
-        useMaterial3: true,
-      ),
+      title: 'Finance App',
+      theme: buildAppTheme(),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('ar', '')],
-      locale: const Locale('ar', ''),
-      initialRoute: '/',
-      routes: getAppRoutes(),
+      supportedLocales: const [Locale('ar', 'AE')],
+      locale: const Locale('ar', 'AE'),
+      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

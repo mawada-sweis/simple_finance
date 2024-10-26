@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
-import '../models/product_model.dart';
 
-class ProductCard extends StatelessWidget {
-  final Product product;
-  final Function(Product) onTap;
+class EntityCard extends StatelessWidget {
+  final String title;
+  final String quantityText;
+  final String purchaseText;
+  final String saleText;
+  final VoidCallback onTap;
 
-  const ProductCard({super.key, required this.product, required this.onTap});
+  const EntityCard({
+    super.key,
+    required this.title,
+    required this.quantityText,
+    required this.purchaseText,
+    required this.saleText,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(product),
+      onTap: onTap,
       child: Card(
         color: Colors.white,
         elevation: 3,
@@ -28,7 +37,7 @@ class ProductCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.name,
+                          title,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -39,7 +48,7 @@ class ProductCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          product.stockQuantity.toString(),
+                          quantityText,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -52,7 +61,7 @@ class ProductCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        'الشراء: ${product.purchasePrice.toStringAsFixed(1)}₪',
+                        purchaseText,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -60,7 +69,7 @@ class ProductCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'البيع: ${product.salePrice.toStringAsFixed(1)}₪',
+                        saleText,
                         style: const TextStyle(
                           fontSize: 14,
                           color: Color.fromRGBO(33, 157, 188, 1),
