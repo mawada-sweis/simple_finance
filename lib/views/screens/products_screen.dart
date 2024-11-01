@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './product_details_screen.dart';
 import '../../view_models/product_view_model.dart';
 import '../../view_models/search_view_model.dart';
 import '../shared/main_scaffold.dart';
@@ -30,6 +31,22 @@ class ProductScreenState extends State<ProductScreen> {
         productViewModel.setProducts(widget.searchResults);
       }
     });
+  }
+
+  Future<void> _navigateToProductDetail(Product product) async {
+    final productViewModel =
+        Provider.of<ProductViewModel>(context, listen: false);
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductDetailScreen(product: product),
+      ),
+    );
+
+    if (result == 'updated' || result == 'deleted') {
+      productViewModel.fetchAllProducts();
+    }
   }
 
   @override
@@ -74,9 +91,7 @@ class ProductScreenState extends State<ProductScreen> {
                             quantityText: "الكمية: ${product.stockQuantity}",
                             purchaseText: "الشراء: ${product.purchasePrice}₪",
                             saleText: "البيع: ${product.salePrice}₪",
-                            onTap: () {
-                              // Define an action when the card is tapped
-                            },
+                            onTap: () => _navigateToProductDetail(product),
                           );
                         },
                       );
