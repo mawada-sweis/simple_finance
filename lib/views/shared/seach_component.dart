@@ -52,7 +52,6 @@ class SearchComponent extends StatelessWidget {
                       color: Theme.of(context).colorScheme.secondaryContainer),
                   border: InputBorder.none,
                 ),
-                textDirection: TextDirection.rtl,
                 onSubmitted: (value) {
                   if (_selectedField.value.isNotEmpty && value.isNotEmpty) {
                     onSearch(_selectedField.value, value);

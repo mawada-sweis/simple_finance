@@ -11,6 +11,7 @@ class MainScaffold extends StatelessWidget {
   final bool showEditIcon;
   final bool showDeleteIcon;
   final Function? onDeletePressed;
+  final VoidCallback? onSavePressed;
 
   const MainScaffold({
     super.key,
@@ -21,6 +22,7 @@ class MainScaffold extends StatelessWidget {
     this.showEditIcon = false,
     this.showDeleteIcon = false,
     this.onDeletePressed,
+    this.onSavePressed,
   });
 
   @override
@@ -32,6 +34,7 @@ class MainScaffold extends StatelessWidget {
         showEditIcon: showEditIcon,
         showDeleteIcon: showDeleteIcon,
         onDeletePressed: onDeletePressed,
+        onSavePressed: onSavePressed,
       ),
       drawer: SizedBox(
         width: MediaQuery.of(context).size.width * 0.5,

@@ -25,7 +25,6 @@ class MenuComponent extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
-                textDirection: TextDirection.rtl,
               ),
             ),
           ),
