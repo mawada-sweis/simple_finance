@@ -3,7 +3,7 @@ import 'package:simple_finance/services/database_service.dart';
 import '../../models/product_model.dart';
 
 class ProductDetailViewModel extends ChangeNotifier {
-  final Product product;
+  final Product? product;
   final DatabaseService _databaseService = DatabaseService();
   bool hasChanges = false;
 
@@ -18,68 +18,58 @@ class ProductDetailViewModel extends ChangeNotifier {
   late TextEditingController supplierIdController;
   late TextEditingController initialQuantityController;
   late TextEditingController noteController;
+  late TextEditingController unitController;
+  late TextEditingController lastPurchasePriceController;
 
-  ProductDetailViewModel(this.product) {
+  ProductDetailViewModel({this.product}) {
     _initializeControllers();
   }
 
   void _initializeControllers() {
-    nameController = TextEditingController(text: product.name);
-    nameController.addListener(() {
-      hasChanges = true;
-    });
-    categoryController = TextEditingController(text: product.categoryId);
-    categoryController.addListener(() {
-      hasChanges = true;
-    });
-    colorController = TextEditingController(text: product.color);
-    colorController.addListener(() {
-      hasChanges = true;
-    });
+    nameController = TextEditingController(text: product?.name ?? '');
+    categoryController = TextEditingController(text: product?.categoryId ?? '');
+    colorController = TextEditingController(text: product?.color ?? '');
     purchasePriceController =
-        TextEditingController(text: product.purchasePrice.toString());
-    purchasePriceController.addListener(() {
-      hasChanges = true;
-    });
+        TextEditingController(text: product?.purchasePrice.toString() ?? '');
     salePriceController =
-        TextEditingController(text: product.salePrice.toString());
-    salePriceController.addListener(() {
-      hasChanges = true;
-    });
+        TextEditingController(text: product?.salePrice.toString() ?? '');
     averageCostController =
-        TextEditingController(text: product.averageCost.toString());
-    averageCostController.addListener(() {
-      hasChanges = true;
-    });
-    sizeController = TextEditingController(text: product.size);
-    sizeController.addListener(() {
-      hasChanges = true;
-    });
+        TextEditingController(text: product?.averageCost.toString() ?? '');
+    sizeController = TextEditingController(text: product?.size ?? '');
     stockQuantityController =
-        TextEditingController(text: product.stockQuantity.toString());
-    stockQuantityController.addListener(() {
-      hasChanges = true;
-    });
-    supplierIdController = TextEditingController(text: product.supplierId);
-    supplierIdController.addListener(() {
-      hasChanges = true;
-    });
+        TextEditingController(text: product?.stockQuantity.toString() ?? '');
+    supplierIdController =
+        TextEditingController(text: product?.supplierId ?? '');
     initialQuantityController =
-        TextEditingController(text: product.initialQuantity.toString());
-    initialQuantityController.addListener(() {
-      hasChanges = true;
-    });
-    noteController = TextEditingController(text: product.note);
-    noteController.addListener(() {
-      hasChanges = true;
-    });
+        TextEditingController(text: product?.initialQuantity.toString() ?? '');
+    noteController = TextEditingController(text: product?.note ?? '');
+    lastPurchasePriceController = TextEditingController(
+        text: product?.lastPurchasePrice.toString() ?? '');
+    unitController = TextEditingController(text: product?.unit ?? '');
+    _addChangeListeners();
+  }
+
+  void _addChangeListeners() {
+    nameController.addListener(() => hasChanges = true);
+    categoryController.addListener(() => hasChanges = true);
+    colorController.addListener(() => hasChanges = true);
+    purchasePriceController.addListener(() => hasChanges = true);
+    salePriceController.addListener(() => hasChanges = true);
+    averageCostController.addListener(() => hasChanges = true);
+    sizeController.addListener(() => hasChanges = true);
+    stockQuantityController.addListener(() => hasChanges = true);
+    supplierIdController.addListener(() => hasChanges = true);
+    initialQuantityController.addListener(() => hasChanges = true);
+    noteController.addListener(() => hasChanges = true);
+    lastPurchasePriceController.addListener(() => hasChanges = true);
+    unitController.addListener(() => hasChanges = true);
   }
 
   Future<void> saveChanges(BuildContext context) async {
-    if (hasChanges) {
+    if (product != null && hasChanges) {
       try {
         final updatedProduct = Product(
-          id: product.id,
+          id: product!.id,
           name: nameController.text,
           categoryId: categoryController.text,
           color: colorController.text,
@@ -91,6 +81,8 @@ class ProductDetailViewModel extends ChangeNotifier {
           supplierId: supplierIdController.text,
           initialQuantity: int.parse(initialQuantityController.text),
           note: noteController.text,
+          unit: unitController.text,
+          lastPurchasePrice: double.parse(lastPurchasePriceController.text),
         );
 
         await _databaseService.updateProduct(updatedProduct);
@@ -110,7 +102,39 @@ class ProductDetailViewModel extends ChangeNotifier {
     }
   }
 
-  void disposeControllers() {
+  Future<void> addProduct(BuildContext context) async {
+    try {
+      final newProduct = Product(
+        id: '',
+        name: nameController.text,
+        categoryId: categoryController.text,
+        color: colorController.text,
+        purchasePrice: double.tryParse(purchasePriceController.text) ?? 0.0,
+        salePrice: double.tryParse(salePriceController.text) ?? 0.0,
+        averageCost: double.tryParse(averageCostController.text) ?? 0.0,
+        size: sizeController.text,
+        stockQuantity: int.tryParse(stockQuantityController.text) ?? 0,
+        supplierId: supplierIdController.text,
+        initialQuantity: int.tryParse(initialQuantityController.text) ?? 0,
+        note: noteController.text,
+        lastPurchasePrice:
+            double.tryParse(lastPurchasePriceController.text) ?? 0.0,
+        unit: unitController.text,
+      );
+
+      await _databaseService.addProduct(newProduct);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم إضافة المنتج بنجاح')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('فشل في إضافة المنتج')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
     nameController.dispose();
     categoryController.dispose();
     colorController.dispose();
@@ -122,5 +146,8 @@ class ProductDetailViewModel extends ChangeNotifier {
     supplierIdController.dispose();
     initialQuantityController.dispose();
     noteController.dispose();
+    lastPurchasePriceController.dispose();
+    unitController.dispose();
+    super.dispose();
   }
 }

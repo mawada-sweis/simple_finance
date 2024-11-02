@@ -16,14 +16,14 @@ class ProductDetailScreen extends StatelessWidget {
     final appBarViewModel = Provider.of<AppBarViewModel>(context, listen: true);
 
     return ChangeNotifierProvider(
-      create: (_) => ProductDetailViewModel(product),
+      create: (_) => ProductDetailViewModel(product: product),
       child: Consumer<ProductDetailViewModel>(
         builder: (context, viewModel, child) {
           return MainScaffold(
             title: 'معلومات المنتج',
             showEditIcon: true,
             showDeleteIcon: true,
-            bottomSelectedIndex: 0,
+            bottomSelectedIndex: 1,
             onSavePressed: () async {
               await viewModel.saveChanges(context);
               appBarViewModel.toggleEditMode();
@@ -82,6 +82,16 @@ class ProductDetailScreen extends StatelessWidget {
                   SharedTextField(
                     label: 'الكمية الأولية',
                     controller: viewModel.initialQuantityController,
+                    readOnly: !appBarViewModel.isEditing,
+                  ),
+                  SharedTextField(
+                    label: 'الوحدة',
+                    controller: viewModel.unitController,
+                    readOnly: !appBarViewModel.isEditing,
+                  ),
+                  SharedTextField(
+                    label: 'آخر سعر شراء',
+                    controller: viewModel.lastPurchasePriceController,
                     readOnly: !appBarViewModel.isEditing,
                   ),
                   SharedTextField(

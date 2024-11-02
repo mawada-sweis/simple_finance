@@ -30,6 +30,8 @@ class DatabaseService {
       'supplier_id': product.supplierId,
       'initial_quantity': product.initialQuantity,
       'note': product.note,
+      'last_purchase_price': product.lastPurchasePrice,
+      'unit': product.unit,
     });
   }
 
@@ -74,10 +76,40 @@ class DatabaseService {
           supplierId: data['supplier_id'] ?? '',
           initialQuantity: data['initial_quantity'] as int? ?? 0,
           note: data['note'] ?? '',
+          lastPurchasePrice:
+              (data['last_purchase_price'] as num?)?.toDouble() ?? 0.0,
+          unit: data['unit'] ?? '',
         );
       }).toList();
     } catch (e) {
       return [];
     }
+  }
+
+  Future<void> addProduct(Product product) async {
+    await _firestore.collection('products').add({
+      'name': product.name,
+      'category_id': product.categoryId,
+      'color': product.color,
+      'purchase_price': product.purchasePrice,
+      'sale_price': product.salePrice,
+      'size': product.size,
+      'stock_quantity': product.stockQuantity,
+      'supplier_id': product.supplierId,
+      'initial_quantity': product.initialQuantity,
+      'note': product.note,
+      'last_purchase_price': product.lastPurchasePrice,
+      'unit': product.unit,
+      'average_cost': product.averageCost,
+    });
+  }
+
+  Future<void> addUser(User user) async {
+    await _firestore.collection('users').add({
+      'full_name': user.fullName,
+      'address': user.address,
+      'phone': user.phone,
+      'role': user.role,
+    });
   }
 }

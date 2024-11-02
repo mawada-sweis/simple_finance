@@ -4,11 +4,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:simple_finance/app_routes.dart';
 import 'package:simple_finance/services/navigation_service.dart';
 import 'package:simple_finance/view_models/app_bar_view_model.dart';
+import 'package:simple_finance/view_models/product/product_details_view_model.dart';
 import 'package:simple_finance/view_models/product/product_view_model.dart';
 import 'package:simple_finance/view_models/user/users_view_model.dart';
 import 'utils/theme.dart';
 import 'view_models/search_view_model.dart';
 import 'package:provider/provider.dart';
+
+import 'view_models/user/user_details_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +31,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NavigationService()),
         ChangeNotifierProvider(create: (_) => ProductViewModel()),
         ChangeNotifierProvider(create: (_) => UsersViewModel()),
+        ChangeNotifierProvider(create: (_) => UserDetailsViewModel()),
+        ChangeNotifierProvider(create: (_) => ProductDetailViewModel()),
       ],
       child: MaterialApp(
         title: 'Finance App',

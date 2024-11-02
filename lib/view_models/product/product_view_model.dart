@@ -27,6 +27,8 @@ class ProductViewModel extends ChangeNotifier {
         supplierId: data['supplier_id'] ?? '',
         initialQuantity: (data['initial_quantity'] ?? 0).toInt(),
         note: data['note'] ?? '',
+        lastPurchasePrice: (data['last_purchase_price'] ?? 0).toDouble(),
+        unit: data['unit'] ?? '',
       ),
     );
     notifyListeners();

@@ -16,7 +16,7 @@ class UserDetailScreen extends StatelessWidget {
     final appBarViewModel = Provider.of<AppBarViewModel>(context, listen: true);
 
     return ChangeNotifierProvider(
-      create: (_) => UserDetailsViewModel(user),
+      create: (_) => UserDetailsViewModel(user: user),
       child: Consumer<UserDetailsViewModel>(
         builder: (context, viewModel, child) {
           return MainScaffold(

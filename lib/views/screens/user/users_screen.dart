@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_finance/models/user_model.dart';
+import 'package:simple_finance/view_models/user/user_details_view_model.dart';
 import 'package:simple_finance/view_models/user/users_view_model.dart';
 import 'user_details_screen.dart';
 import '../../shared/main_scaffold.dart';
 import '../../shared/entity_card.dart';
+import '../../shared/add_button_component.dart';
+import 'add_user_screen.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
@@ -12,7 +15,7 @@ class UsersScreen extends StatefulWidget {
   @override
   UsersScreenState createState() => UsersScreenState();
 }
- 
+
 class UsersScreenState extends State<UsersScreen> {
   late List<User> users;
   @override
@@ -34,7 +37,7 @@ class UsersScreenState extends State<UsersScreen> {
       ),
     );
 
-    if (result == 'updated' || result == 'deleted') {
+    if (result == 'updated' || result == 'deleted' || result == 'added') {
       await usersViewModel.fetchAllUsers();
       setState(() {
         users = usersViewModel.users;
@@ -45,29 +48,51 @@ class UsersScreenState extends State<UsersScreen> {
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
-      title: 'الأشخاص',
-      bottomSelectedIndex: 1,
-      body: Column(
-        children: [
-          Expanded(
-            child: users.isEmpty
-                ? const Center(child: Text("لا يوجد أشخاص لعرضهم"))
-                : ListView.builder(
-                    itemCount: users.length,
-                    itemBuilder: (context, index) {
-                      final user = users[index];
-                      return EntityCard(
-                        title: user.fullName,
-                        additional: "العنوان: ${user.address}",
-                        secoundaryTitle: "الرقم: ${user.phone}₪",
-                        secoundaryAdditional: "الوطيفة: ${user.role}₪",
-                        onTap: () => _navigateToUsersDetail(user),
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
-    );
+        title: 'الأشخاص',
+        bottomSelectedIndex: 1,
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: users.isEmpty
+                      ? const Center(child: Text("لا يوجد أشخاص لعرضهم"))
+                      : ListView.builder(
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            final user = users[index];
+                            return EntityCard(
+                              title: user.fullName,
+                              additional: "العنوان: ${user.address}",
+                              secoundaryTitle: "الرقم: ${user.phone}",
+                              secoundaryAdditional: "الوظيفة: ${user.role}",
+                              onTap: () => _navigateToUsersDetail(user),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: AddButtonComponent(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                          create: (_) => UserDetailsViewModel(),
+                          child: const AddUserScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }
