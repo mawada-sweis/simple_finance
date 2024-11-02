@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:simple_finance/models/user_model.dart';
 import '../models/product_model.dart';
 
 class DatabaseService {
@@ -29,6 +30,15 @@ class DatabaseService {
       'supplier_id': product.supplierId,
       'initial_quantity': product.initialQuantity,
       'note': product.note,
+    });
+  }
+
+  Future<void> updateUser(User user) async {
+    await _firestore.collection('users').doc(user.id).update({
+      'full_name': user.fullName,
+      'address': user.address,
+      'phone': user.phone,
+      'role': user.role,
     });
   }
 

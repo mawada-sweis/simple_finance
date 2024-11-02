@@ -8,8 +8,10 @@ class NavigationService extends ChangeNotifier {
         Navigator.pushReplacementNamed(context, AppRoutes.home);
         break;
       case 1:
-        // Navigator.pushReplacementNamed(context, AppRoutes.products);
         Navigator.pushNamed(context, AppRoutes.products);
+        break;
+      case 2:
+        Navigator.pushReplacementNamed(context, AppRoutes.users);
         break;
       default:
         break;

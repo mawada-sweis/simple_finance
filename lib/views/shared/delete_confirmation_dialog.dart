@@ -21,7 +21,6 @@ class DeleteConfirmationDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             onConfirmDelete();
-            Navigator.pop(context);
           },
           child: const Text('نعم، احذف'),
         ),
