@@ -11,6 +11,8 @@ class Product {
   String supplierId;
   int initialQuantity;
   String note;
+  String unit;
+  double lastPurchasePrice;
 
   Product({
     required this.id,
@@ -25,5 +27,7 @@ class Product {
     required this.supplierId,
     required this.initialQuantity,
     required this.note,
+    required this.lastPurchasePrice,
+    required this.unit,
   });
 }
