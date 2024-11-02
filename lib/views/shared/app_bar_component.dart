@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../view_models/app_bar_view_model.dart';
+import './delete_confirmation_dialog.dart';
 
 class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showReturnIcon;
   final bool showEditIcon;
   final bool showDeleteIcon;
-  final Function? onDeletePressed;
+  final List<String>? deleteDocInfo;
   final VoidCallback? onSavePressed;
 
   const AppBarComponent({
@@ -16,7 +17,7 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
     this.showReturnIcon = true,
     this.showEditIcon = false,
     this.showDeleteIcon = false,
-    this.onDeletePressed,
+    this.deleteDocInfo,
     this.onSavePressed,
   });
 
@@ -28,12 +29,10 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title),
       centerTitle: true,
       leading: Builder(
-        builder: (context) {
+        builder: (BuildContext innerContext) {
           return IconButton(
             icon: const Icon(Icons.menu, size: 25),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
+            onPressed: () => Scaffold.of(innerContext).openDrawer(),
           );
         },
       ),
@@ -41,25 +40,37 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
         if (showEditIcon)
           IconButton(
             icon: Icon(appBarViewModel.isEditing ? Icons.save : Icons.edit),
-            onPressed: () {
-              if (appBarViewModel.isEditing && onSavePressed != null) {
-                onSavePressed!();
-              } else {
-                appBarViewModel.toggleEditMode();
-              }
-            },
+            onPressed: () => appBarViewModel.handleEditSave(onSavePressed),
           ),
         if (showDeleteIcon)
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () => onDeletePressed?.call(),
+            onPressed: () {
+              _showDeleteConfirmationDialog(context, appBarViewModel);
+            },
           ),
         if (showReturnIcon)
           IconButton(
             icon: const Icon(Icons.arrow_forward),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => appBarViewModel.handleReturn(context),
           ),
       ],
+    );
+  }
+
+  void _showDeleteConfirmationDialog(
+      BuildContext context, AppBarViewModel appBarViewModel) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return DeleteConfirmationDialog(
+          onConfirmDelete: () async {
+            Navigator.pop(dialogContext);
+            await appBarViewModel.deleteDocument(deleteDocInfo);
+            Navigator.pop(context, "deleted");
+          },
+        );
+      },
     );
   }
 

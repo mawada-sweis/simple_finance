@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../app_routes.dart';
 import '../../view_models/search_view_model.dart';
-import '../shared/seach_component.dart';
+import '../shared/search_component.dart';
 import '../shared/main_scaffold.dart';
-import 'products_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -30,19 +30,11 @@ class HomeScreen extends StatelessWidget {
                   )),
               const SizedBox(height: 30),
               SearchComponent(
-                onSearch: (field, query) {
-                  searchViewModel.search('products', field, query).then((_) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ProductScreen(searchViewModel.results),
-                      ),
-                    );
-                  });
-                },
-                onReset: () {
-                  searchViewModel.resetSearch();
+                onSearch: (field, query) async {
+                  await searchViewModel.executeSearch(
+                      context, 'products', field, query);
+                  Navigator.pushNamed(context, AppRoutes.products,
+                      arguments: searchViewModel.results);
                 },
                 fieldOptions: [
                   SearchFieldOption(

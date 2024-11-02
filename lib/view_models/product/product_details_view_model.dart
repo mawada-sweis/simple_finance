@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/product_model.dart';
-import '../services/product_service.dart';
+import 'package:simple_finance/services/database_service.dart';
+import '../../models/product_model.dart';
 
 class ProductDetailViewModel extends ChangeNotifier {
   final Product product;
-  final ProductService _productService = ProductService();
-  // final AppBarViewModel appBarViewModel;
+  final DatabaseService _databaseService = DatabaseService();
   bool hasChanges = false;
 
   late TextEditingController nameController;
@@ -20,9 +19,6 @@ class ProductDetailViewModel extends ChangeNotifier {
   late TextEditingController initialQuantityController;
   late TextEditingController noteController;
 
-  // ProductDetailViewModel(this.product, this.appBarViewModel) {
-  //   _initializeControllers();
-  // }
   ProductDetailViewModel(this.product) {
     _initializeControllers();
   }
@@ -97,13 +93,10 @@ class ProductDetailViewModel extends ChangeNotifier {
           note: noteController.text,
         );
 
-        // Save the new Product instance to Firebase
-        await _productService.updateProduct(updatedProduct);
+        await _databaseService.updateProduct(updatedProduct);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('تم حفظ التغييرات بنجاح')),
         );
-        // appBarViewModel.toggleEditMode();
-        // return;
         hasChanges = false;
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -115,10 +108,6 @@ class ProductDetailViewModel extends ChangeNotifier {
         const SnackBar(content: Text('لا يوجد تغييرات لحفظها')),
       );
     }
-  }
-
-  Future<void> deleteProduct() async {
-    await _productService.deleteProduct(product.id);
   }
 
   void disposeControllers() {

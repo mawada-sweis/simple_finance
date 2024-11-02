@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../view_models/search_view_model.dart';
 
 class SearchFieldOption {
   final String displayName;
@@ -9,8 +11,8 @@ class SearchFieldOption {
 }
 
 class SearchComponent extends StatelessWidget {
-  final Function(String, String) onSearch;
-  final VoidCallback onReset;
+  final Function? onSearch;
+  final VoidCallback? onReset;
   final List<SearchFieldOption> fieldOptions;
   final TextEditingController _searchController = TextEditingController();
   final ValueNotifier<String> _selectedField;
@@ -18,13 +20,14 @@ class SearchComponent extends StatelessWidget {
   SearchComponent({
     super.key,
     required this.onSearch,
-    required this.onReset,
+    this.onReset,
     required this.fieldOptions,
   }) : _selectedField =
             ValueNotifier<String>(fieldOptions.first.firebaseFieldName);
 
   @override
   Widget build(BuildContext context) {
+    final searchViewModel = Provider.of<SearchViewModel>(context);
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -53,8 +56,9 @@ class SearchComponent extends StatelessWidget {
                   border: InputBorder.none,
                 ),
                 onSubmitted: (value) {
+                  FocusScope.of(context).unfocus();
                   if (_selectedField.value.isNotEmpty && value.isNotEmpty) {
-                    onSearch(_selectedField.value, value);
+                    onSearch?.call(_selectedField.value, value);
                   }
                 },
               ),
@@ -66,7 +70,8 @@ class SearchComponent extends StatelessWidget {
               ),
               onPressed: () {
                 _searchController.clear();
-                onReset();
+                searchViewModel.resetSearch();
+                if (onReset != null) onReset!();
               },
               color: Theme.of(context).colorScheme.error,
             ),

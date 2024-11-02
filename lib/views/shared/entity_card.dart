@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 
 class EntityCard extends StatelessWidget {
   final String title;
-  final String quantityText;
-  final String purchaseText;
-  final String saleText;
+  final String secoundaryAdditional;
+  final String secoundaryTitle;
+  final String additional;
   final VoidCallback onTap;
 
   const EntityCard({
     super.key,
     required this.title,
-    required this.quantityText,
-    required this.purchaseText,
-    required this.saleText,
+    required this.additional,
+    required this.secoundaryTitle,
+    required this.secoundaryAdditional,
     required this.onTap,
   });
 
@@ -48,7 +48,7 @@ class EntityCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          quantityText,
+                          additional,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -61,7 +61,7 @@ class EntityCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        purchaseText,
+                        secoundaryTitle,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -69,7 +69,7 @@ class EntityCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        saleText,
+                        secoundaryAdditional,
                         style: const TextStyle(
                           fontSize: 14,
                           color: Color.fromRGBO(33, 157, 188, 1),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../services/navigation_service.dart';
 import './app_bar_component.dart';
 import './menu_component.dart';
 import './bottom_bar_component.dart';
@@ -10,30 +12,33 @@ class MainScaffold extends StatelessWidget {
   final bool showReturnIcon;
   final bool showEditIcon;
   final bool showDeleteIcon;
-  final Function? onDeletePressed;
+  final List<String>? deleteDocInfo;
   final VoidCallback? onSavePressed;
 
   const MainScaffold({
     super.key,
     required this.title,
     required this.body,
-    this.bottomSelectedIndex = 0,
+    required this.bottomSelectedIndex,
     this.showReturnIcon = true,
     this.showEditIcon = false,
     this.showDeleteIcon = false,
-    this.onDeletePressed,
+    this.deleteDocInfo,
     this.onSavePressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final navigationService =
+        Provider.of<NavigationService>(context, listen: false);
+
     return Scaffold(
       appBar: AppBarComponent(
         title: title,
         showReturnIcon: showReturnIcon,
         showEditIcon: showEditIcon,
         showDeleteIcon: showDeleteIcon,
-        onDeletePressed: onDeletePressed,
+        deleteDocInfo: deleteDocInfo,
         onSavePressed: onSavePressed,
       ),
       drawer: SizedBox(
@@ -43,8 +48,10 @@ class MainScaffold extends StatelessWidget {
         ),
       ),
       body: body,
-      bottomNavigationBar:
-          BottomBarComponent(selectedIndex: bottomSelectedIndex),
+      bottomNavigationBar: BottomBarComponent(
+          selectedIndex: bottomSelectedIndex,
+          onItemTapped: (index) => navigationService.onBottomBarItemTapped(
+              context, index, bottomSelectedIndex)),
     );
   }
 }

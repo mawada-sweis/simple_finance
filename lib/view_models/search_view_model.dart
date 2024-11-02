@@ -1,35 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:logger/logger.dart';
-import 'package:simple_finance/models/product_model.dart';
+import '../models/product_model.dart';
+import '../services/database_service.dart';
 
 class SearchViewModel extends ChangeNotifier {
-  var logger = Logger();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final DatabaseService _databaseService = DatabaseService();
   List<Product> _results = [];
   bool _isLoading = false;
 
   List<Product> get results => _results;
   bool get isLoading => _isLoading;
 
-  Future<void> search(
-      String collectionName, String fieldName, String query) async {
+  Future<void> executeSearch(BuildContext context, String collectionName,
+      String fieldName, String query) async {
     _isLoading = true;
     notifyListeners();
-    try {
-      QuerySnapshot snapshot = await _firestore
-          .collection(collectionName)
-          .where(fieldName, isGreaterThanOrEqualTo: query)
-          .where(fieldName, isLessThanOrEqualTo: '$query\uf8ff')
-          .get();
-      _results = snapshot.docs
-          .map((doc) =>
-              Product.fromFirestore(doc.data() as Map<String, dynamic>, doc.id))
-          .toList();
-    } catch (e) {
-      logger.e("Error searching: $e");
-      _results = [];
-    }
+
+    _results =
+        await _databaseService.searchProducts(collectionName, fieldName, query);
+
     _isLoading = false;
     notifyListeners();
   }

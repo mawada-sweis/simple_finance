@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/product_model.dart';
-import '../../view_models/product_details_view_model.dart';
-import '../../view_models/app_bar_view_model.dart';
-import '../shared/main_scaffold.dart';
-import '../shared/delete_confirmation_dialog.dart';
-import '../shared/build_text_field.dart';
+import '../../../models/product_model.dart';
+import '../../../view_models/product/product_details_view_model.dart';
+import '../../../view_models/app_bar_view_model.dart';
+import '../../shared/main_scaffold.dart';
+import '../../shared/build_text_field.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final Product product;
@@ -30,8 +29,7 @@ class ProductDetailScreen extends StatelessWidget {
               appBarViewModel.toggleEditMode();
               Navigator.pop(context, 'updated');
             },
-            onDeletePressed: () =>
-                _showDeleteConfirmationDialog(context, viewModel),
+            deleteDocInfo: ['products', product.id],
             body: Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
@@ -99,21 +97,4 @@ class ProductDetailScreen extends StatelessWidget {
       ),
     );
   }
-
-  void _showDeleteConfirmationDialog(
-      BuildContext context, ProductDetailViewModel viewModel) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) => DeleteConfirmationDialog(
-        onConfirmDelete: () async {
-          //Navigator.pop(dialogContext, 'deleted');
-          await viewModel.deleteProduct();
-          
-          Navigator.pop(context, 'deleted');
-          
-        },
-      ),
-    );
-  }
-
 }
