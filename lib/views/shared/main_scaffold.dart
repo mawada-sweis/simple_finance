@@ -12,6 +12,7 @@ class MainScaffold extends StatelessWidget {
   final bool showReturnIcon;
   final bool showEditIcon;
   final bool showDeleteIcon;
+  final bool showSaveIcon;
   final List<String>? deleteDocInfo;
   final VoidCallback? onSavePressed;
 
@@ -23,6 +24,7 @@ class MainScaffold extends StatelessWidget {
     this.showReturnIcon = true,
     this.showEditIcon = false,
     this.showDeleteIcon = false,
+    this.showSaveIcon = false,
     this.deleteDocInfo,
     this.onSavePressed,
   });
@@ -38,6 +40,7 @@ class MainScaffold extends StatelessWidget {
         showReturnIcon: showReturnIcon,
         showEditIcon: showEditIcon,
         showDeleteIcon: showDeleteIcon,
+        showSaveIcon: showSaveIcon,
         deleteDocInfo: deleteDocInfo,
         onSavePressed: onSavePressed,
       ),

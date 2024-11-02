@@ -8,6 +8,7 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
   final bool showReturnIcon;
   final bool showEditIcon;
   final bool showDeleteIcon;
+  final bool showSaveIcon;
   final List<String>? deleteDocInfo;
   final VoidCallback? onSavePressed;
 
@@ -17,6 +18,7 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
     this.showReturnIcon = true,
     this.showEditIcon = false,
     this.showDeleteIcon = false,
+    this.showSaveIcon = false,
     this.deleteDocInfo,
     this.onSavePressed,
   });
@@ -49,6 +51,8 @@ class AppBarComponent extends StatelessWidget implements PreferredSizeWidget {
               _showDeleteConfirmationDialog(context, appBarViewModel);
             },
           ),
+        if (showSaveIcon)
+          IconButton(onPressed: onSavePressed, icon: const Icon(Icons.save)),
         if (showReturnIcon)
           IconButton(
             icon: const Icon(Icons.arrow_forward),
