@@ -22,17 +22,30 @@ class ProductScreen extends StatefulWidget {
 
 class ProductScreenState extends State<ProductScreen> {
   late List<Product> searchResults = [];
+  bool _isInitialLoad = false;
+
   @override
   void initState() {
     super.initState();
+  }
 
-    if (widget.searchResults.isNotEmpty) {
-      searchResults = widget.searchResults;
-    } else {
-      final productViewModel =
-          Provider.of<ProductViewModel>(context, listen: false);
-      productViewModel.fetchAllProducts();
-      searchResults = productViewModel.products;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final productViewModel =
+        Provider.of<ProductViewModel>(context, listen: false);
+
+    if (!_isInitialLoad) {
+      if (widget.searchResults.isNotEmpty) {
+        searchResults = widget.searchResults;
+      } else {
+        productViewModel.fetchAllProducts().then((_) {
+          setState(() {
+            searchResults = productViewModel.products;
+          });
+        });
+      }
+      _isInitialLoad = true;
     }
   }
 
@@ -112,24 +125,21 @@ class ProductScreenState extends State<ProductScreen> {
               ),
             ],
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: AddButtonComponent(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider(
-                        create: (_) =>
-                            ProductDetailViewModel(),
-                        child: const AddProductScreen(),
-                      ),
+          Positioned(
+            right: 16.0,
+            bottom: 16.0,
+            child: AddButtonComponent(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider(
+                      create: (_) => ProductDetailViewModel(),
+                      child: const AddProductScreen(),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ],

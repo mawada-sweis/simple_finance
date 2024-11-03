@@ -7,15 +7,11 @@ class AddButtonComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 16,
-      right: 16,
-      child: FloatingActionButton(
-        onPressed: onPressed,
-        shape: const CircleBorder(),
-        backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(Icons.add),
-      ),
+    return FloatingActionButton(
+      onPressed: onPressed,
+      shape: const CircleBorder(),
+      backgroundColor: Theme.of(context).primaryColor,
+      child: const Icon(Icons.add),
     );
   }
 }
