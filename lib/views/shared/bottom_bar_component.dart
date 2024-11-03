@@ -10,7 +10,7 @@ class BottomBarComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex: selectedIndex,
+      currentIndex: selectedIndex >= 0 ? selectedIndex : 0,
       backgroundColor:
           Theme.of(context).bottomNavigationBarTheme.backgroundColor,
       items: const <BottomNavigationBarItem>[
@@ -27,7 +27,9 @@ class BottomBarComponent extends StatelessWidget {
           Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
       unselectedItemColor:
           Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
-      onTap: onItemTapped,
+      onTap: (index) {
+        onItemTapped(index);
+      },
     );
   }
 }

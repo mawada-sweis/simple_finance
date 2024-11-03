@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_finance/services/database_service.dart';
+import '../app_routes.dart';
 
 class AppBarViewModel extends ChangeNotifier {
   bool isEditing = false;
@@ -10,7 +11,11 @@ class AppBarViewModel extends ChangeNotifier {
   }
 
   void handleReturn(BuildContext context) {
-    Navigator.pop(context);
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    } else {
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    }
   }
 
   void handleEditSave(VoidCallback? onSavePressed) {

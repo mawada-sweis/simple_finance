@@ -62,7 +62,7 @@ class UsersScreenState extends State<UsersScreen> {
   Widget build(BuildContext context) {
     return MainScaffold(
       title: 'الأشخاص',
-      bottomSelectedIndex: 1,
+      bottomSelectedIndex: -1,
       body: Stack(
         children: [
           Column(
