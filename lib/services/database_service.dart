@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:simple_finance/models/pricing_model.dart';
 import 'package:simple_finance/models/user_model.dart';
 import '../models/product_model.dart';
+import 'package:logger/logger.dart';
 
 class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    var logger = Logger();
 
   Future<List<T>> fetchAllFromCollection<T>(
     String collectionName, {
@@ -111,5 +114,48 @@ class DatabaseService {
       'phone': user.phone,
       'role': user.role,
     });
+  }
+
+  Future<T?> getDocByID<T>(
+    String collectionName,
+    String docID,
+    T Function(Map<String, dynamic> data, String id) fromFirestore,
+  ) async {
+    try {
+      DocumentSnapshot docSnapshot =
+          await _firestore.collection(collectionName).doc(docID).get();
+      if (docSnapshot.exists) {
+        return fromFirestore(
+            docSnapshot.data() as Map<String, dynamic>, docSnapshot.id);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      logger.e('Error fetching document: $e');
+      return null;
+    }
+  }
+
+  Future<String?> getLastPricingID() async {
+    final query = await _firestore.collection('pricing').get();
+    if (query.docs.isEmpty) return null;
+    final docID = query.docs.map((doc) => int.tryParse(doc.id) ?? 0).toList();
+    final lastID = docID.isNotEmpty ? docID.reduce((a, b) => a > b ? a : b) : 0;
+    final nextID = lastID + 1;
+    return nextID.toString();
+  }
+
+  Future<void> addPricing(Pricing pricing) async {
+    await _firestore
+        .collection('pricing')
+        .doc(pricing.pricingID)
+        .set(pricing.toFirestore());
+  }
+
+  Future<void> updatePricing(Pricing pricing) async {
+    await _firestore
+        .collection('pricing')
+        .doc(pricing.pricingID)
+        .update(pricing.toFirestore());
   }
 }
