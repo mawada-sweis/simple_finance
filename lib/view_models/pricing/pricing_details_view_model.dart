@@ -9,7 +9,6 @@ class PricingDetailsViewModel extends ChangeNotifier {
   final DatabaseService _databaseService = DatabaseService();
   final Pricing pricing;
 
-  TextEditingController notesController = TextEditingController();
   String? selectedUserID;
   double totalSalesPrice = 0.0;
   double totalDiscount = 0.0;
@@ -51,7 +50,6 @@ class PricingDetailsViewModel extends ChangeNotifier {
   }
 
   void _initializeFields() {
-    notesController.text = pricing.notes!;
     selectedUserID = pricing.userID;
 
     productSelections = List.generate(pricing.productsID.length, (index) {
@@ -135,7 +133,6 @@ class PricingDetailsViewModel extends ChangeNotifier {
     pricing.productDiscounts =
         productSelections.map((p) => p.discount).toList();
     pricing.updatedDate = DateTime.now();
-    pricing.notes = notesController.text;
 
     await _databaseService.updatePricing(pricing);
     ScaffoldMessenger.of(context).showSnackBar(

@@ -8,17 +8,16 @@ class Pricing {
   List<double> productDiscounts;
   DateTime createdDate;
   DateTime? updatedDate;
-  String? notes;
 
-  Pricing(
-      {required this.pricingID,
-      required this.userID,
-      required this.productsID,
-      required this.productQuantities,
-      required this.productDiscounts,
-      required this.createdDate,
-      this.updatedDate,
-      this.notes});
+  Pricing({
+    required this.pricingID,
+    required this.userID,
+    required this.productsID,
+    required this.productQuantities,
+    required this.productDiscounts,
+    required this.createdDate,
+    this.updatedDate,
+  });
 
   // Convert Firestore document to Pricing model
   factory Pricing.fromFirestore(Map<String, dynamic> data, String id) {
@@ -33,11 +32,10 @@ class Pricing {
                   : double.tryParse(value.toString()) ?? 0.0)
               .toList() ??
           [],
-      createdDate:(data['createdDate'] as Timestamp).toDate(),
+      createdDate: (data['createdDate'] as Timestamp).toDate(),
       updatedDate: data['updatedDate'] != null
           ? (data['updatedDate'] as Timestamp).toDate()
           : null,
-      notes: data['notes'] ?? '',
     );
   }
 
@@ -50,7 +48,6 @@ class Pricing {
       'productDiscounts': productDiscounts,
       'createdDate': createdDate,
       'updatedDate': updatedDate,
-      'notes': notes,
     };
   }
 }

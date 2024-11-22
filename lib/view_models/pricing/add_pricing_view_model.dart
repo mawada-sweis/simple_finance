@@ -140,7 +140,6 @@ class AddPricingViewModel extends ChangeNotifier {
       productDiscounts: productSelections.map((p) => p.discount).toList(),
       createdDate: createdDate,
       updatedDate: DateTime.now(),
-      notes: notesController.text,
     );
 
     await _databaseService.addPricing(newPricing);

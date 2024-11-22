@@ -93,8 +93,6 @@ class PricingDetailsScreen extends StatelessWidget {
           const SizedBox(height: 10),
           Expanded(
               child: _buildProductList(context, viewModel, appBarViewModel)),
-          const SizedBox(height: 10),
-          _buildNotesField(context, viewModel, appBarViewModel),
         ],
       ),
     );
@@ -134,30 +132,6 @@ class PricingDetailsScreen extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildNotesField(BuildContext context,
-      PricingDetailsViewModel viewModel, AppBarViewModel appBarViewModel) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: TextField(
-        controller: viewModel.notesController,
-        enabled: appBarViewModel.isEditing,
-        decoration: InputDecoration(
-          hintText: 'أضف ملاحظاتك هنا...',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
-        ),
-        maxLines: 3,
-        textInputAction: TextInputAction.newline,
-      ),
     );
   }
 
