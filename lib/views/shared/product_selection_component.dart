@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_finance/models/product_model.dart';
+import 'package:simple_finance/views/shared/dropdown_search_component.dart';
 
 class ProductSelectionComponent extends StatefulWidget {
   final List<Product> productOptions;
@@ -30,6 +31,7 @@ class ProductSelectionComponentState extends State<ProductSelectionComponent> {
   late int quantity;
   late double discount;
   late double total;
+  late List<Product> filteredProductOptions;
 
   @override
   void initState() {
@@ -41,6 +43,7 @@ class ProductSelectionComponentState extends State<ProductSelectionComponent> {
     quantity = widget.productData.quantity;
     discount = widget.productData.discount;
     total = widget.productData.total;
+    filteredProductOptions = List.from(widget.productOptions);
   }
 
   void _updateTotal() {
@@ -65,39 +68,65 @@ class ProductSelectionComponentState extends State<ProductSelectionComponent> {
         Row(
           children: [
             Expanded(
-              child: DropdownButton<String>(
-                value:
-                    widget.productOptions.any((p) => p.id == selectedProductID)
-                        ? selectedProductID
-                        : null,
-                hint: const Text('اختر المنتج',
-                    style: TextStyle(color: Colors.black)),
-                items: widget.productOptions.map((product) {
-                  return DropdownMenuItem(
-                    value: product.id,
-                    child: Text(product.name,
-                        style: const TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w600)),
-                  );
-                }).toList(),
-                onChanged: widget.isEditable
-                    ? (value) {
-                        if (value != null) {
-                          final selectedProduct = widget.productOptions
-                              .firstWhere((p) => p.id == value);
-                          setState(() {
-                            selectedProductID = selectedProduct.id;
-                            productName = selectedProduct.name;
-                            purchasePrice = selectedProduct.purchasePrice;
-                            salePrice = selectedProduct.salePrice;
-                          });
-                          _updateTotal();
-                        }
-                      }
-                    : null,
-                isExpanded: true,
-                dropdownColor: Colors.white,
-              ),
+              child: widget.isEditable
+                  ? DropdownSearchComponent<Product>(
+                      label: '',
+                      hintText: 'اختر المنتج',
+                      items: filteredProductOptions,
+                      displayValue: (product) => product.name,
+                      idValue: (product) => product.id,
+                      initialValue: widget.productOptions
+                          .firstWhere(
+                            (product) => product.id == selectedProductID,
+                            orElse: () => Product(
+                                id: '',
+                                name: 'غير معروف',
+                                purchasePrice: 0.0,
+                                salePrice: 0.0,
+                                averageCost: 0.0,
+                                categoryId: 'غير معروف',
+                                color: 'غير معروف',
+                                initialQuantity: 0,
+                                lastPurchasePrice: 0.0,
+                                note: '',
+                                size: 'غير معروف',
+                                stockQuantity: 0,
+                                supplierId: 'غير معروف',
+                                unit: 'غير معروف'),
+                          )
+                          .name,
+                      onItemSelected: (selectedProductID) {
+                        final selectedProduct = widget.productOptions
+                            .firstWhere(
+                                (product) => product.id == selectedProductID);
+                        setState(() {
+                          this.selectedProductID = selectedProduct.id;
+                          productName = selectedProduct.name;
+                          purchasePrice = selectedProduct.purchasePrice;
+                          salePrice = selectedProduct.salePrice;
+                        });
+                        _updateTotal();
+                      },
+                      onSearch: (query) {
+                        setState(() {
+                          filteredProductOptions = widget.productOptions
+                              .where((product) => product.name
+                                  .toLowerCase()
+                                  .contains(query.toLowerCase()))
+                              .toList();
+                        });
+                      },
+                      onReset: () {
+                        setState(() {
+                          filteredProductOptions =
+                              List.from(widget.productOptions);
+                        });
+                      },
+                    )
+                  : Text(
+                      productName,
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                    ),
             ),
             if (widget.isEditable)
               IconButton(
@@ -106,11 +135,14 @@ class ProductSelectionComponentState extends State<ProductSelectionComponent> {
               ),
           ],
         ),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
               child: _buildInfoField('الكمية', quantity.toString(), (value) {
-                quantity = int.tryParse(value) ?? 1;
+                setState(() {
+                  quantity = int.tryParse(value) ?? 1;
+                });
                 _updateTotal();
               }),
             ),
@@ -126,7 +158,9 @@ class ProductSelectionComponentState extends State<ProductSelectionComponent> {
             const SizedBox(width: 4),
             Expanded(
               child: _buildInfoField('الخصم', discount.toString(), (value) {
-                discount = double.tryParse(value) ?? 0.0;
+                setState(() {
+                  discount = double.tryParse(value) ?? 0.0;
+                });
                 _updateTotal();
               }),
             ),

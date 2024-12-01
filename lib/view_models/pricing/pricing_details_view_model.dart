@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import '../../models/pricing_model.dart';
 import '../../models/user_model.dart';
 import '../../models/product_model.dart';
@@ -6,25 +7,52 @@ import '../../services/database_service.dart';
 import '../../views/shared/product_selection_component.dart';
 
 class PricingDetailsViewModel extends ChangeNotifier {
+  var logger = Logger();
   final DatabaseService _databaseService = DatabaseService();
   final Pricing pricing;
 
+  String pricingID = '';
   String? selectedUserID;
   double totalSalesPrice = 0.0;
   double totalDiscount = 0.0;
+  bool isLoading = true;
 
   List<ProductSelectionData> productSelections = [];
   List<User> userOptions = [];
   List<Product> productOptions = [];
+  List<User> filteredUserOptions = [];
 
   PricingDetailsViewModel({required this.pricing}) {
     _initialize();
   }
 
   Future<void> _initialize() async {
-    await _fetchUserOptions();
-    await _fetchProductOptions();
-    _initializeFields();
+    try {
+      pricingID = await _generatePricingID();
+      await _fetchUserOptions();
+      await _fetchProductOptions();
+      filteredUserOptions = List.from(userOptions);
+      _initializeFields();
+    } catch (e) {
+      logger.e('Error initializing PricingDetailsViewModel: $e');
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void resetFields() {
+    selectedUserID = null;
+    totalSalesPrice = 0.0;
+    totalDiscount = 0.0;
+    productSelections.clear();
+    notifyListeners();
+  }
+
+  Future<String> _generatePricingID() async {
+    final nextID = await _databaseService.getLastPricingID();
+    String currentID = nextID != null ? nextID.padLeft(3, '0') : '000';
+    return currentID;
   }
 
   Future<void> _fetchUserOptions() async {
@@ -91,6 +119,23 @@ class PricingDetailsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void filterUsers(String query) {
+    if (query.isEmpty) {
+      filteredUserOptions = List.from(userOptions);
+    } else {
+      filteredUserOptions = userOptions
+          .where((user) =>
+              user.fullName.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+    notifyListeners();
+  }
+
+  void resetUserOptions() {
+    filteredUserOptions = List.from(userOptions);
+    notifyListeners();
+  }
+
   void addProductRow() {
     productSelections.add(ProductSelectionData(
       productID: '',
@@ -125,7 +170,24 @@ class PricingDetailsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> savePricing(BuildContext context) async {
+  Future<void> updatePricing(BuildContext context) async {
+    if (selectedUserID == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يجب اختيار اسم الشخص'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    } else if (productSelections.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يجب اختيار منتج واحد على الأقل'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
     pricing.userID = selectedUserID!;
     pricing.productsID = productSelections.map((p) => p.productID).toList();
     pricing.productQuantities =
@@ -138,5 +200,39 @@ class PricingDetailsViewModel extends ChangeNotifier {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('تم حفظ التعديلات بنجاح')),
     );
+  }
+
+  Future<void> savePricing(BuildContext context) async {
+    if (selectedUserID == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يجب اختيار اسم الشخص'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    } else if (productSelections.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يجب اختيار منتج واحد على الأقل'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    final newPricing = Pricing(
+      pricingID: pricingID,
+      userID: selectedUserID!,
+      productsID: productSelections.map((p) => p.productID).toList(),
+      productQuantities: productSelections.map((p) => p.quantity).toList(),
+      productDiscounts: productSelections.map((p) => p.discount).toList(),
+      createdDate: DateTime.now(),
+      updatedDate: DateTime.now(),
+    );
+
+    await _databaseService.addPricing(newPricing);
+    resetFields();
+    notifyListeners();
   }
 }

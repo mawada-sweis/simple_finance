@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:simple_finance/models/pricing_model.dart';
 import 'package:simple_finance/view_models/pricing/pricing_details_view_model.dart';
 import 'package:simple_finance/view_models/pricing/pricing_view_model.dart';
-import 'package:simple_finance/views/screens/pricing/add_pricing_screen.dart';
 import 'package:simple_finance/views/screens/pricing/pricing_details_screen.dart';
 import '../../shared/main_scaffold.dart';
 import '../../shared/entity_card.dart';
@@ -43,7 +42,31 @@ class PricingScreenState extends State<PricingScreen> {
                 create: (_) => PricingDetailsViewModel(pricing: pricing),
                 child: PricingDetailsScreen(pricing: pricing!),
               )
-            : const AddPricingScreen(),
+            : ChangeNotifierProvider(
+                create: (_) => PricingDetailsViewModel(
+                  pricing: Pricing(
+                    pricingID: '',
+                    userID: '',
+                    productsID: [],
+                    productQuantities: [],
+                    productDiscounts: [],
+                    createdDate: DateTime.now(),
+                    updatedDate: DateTime.now(),
+                  ),
+                ),
+                child: PricingDetailsScreen(
+                  pricing: Pricing(
+                    pricingID: '',
+                    userID: '',
+                    productsID: [],
+                    productQuantities: [],
+                    productDiscounts: [],
+                    createdDate: DateTime.now(),
+                    updatedDate: DateTime.now(),
+                  ),
+                  mode: PricingMode.add,
+                ),
+              ),
       ),
     );
 

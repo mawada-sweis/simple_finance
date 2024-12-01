@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_finance/models/user_model.dart';
 import 'package:simple_finance/view_models/app_bar_view_model.dart';
+import 'package:simple_finance/views/shared/dropdown_search_component.dart';
 import '../../../models/pricing_model.dart';
 import '../../../view_models/pricing/pricing_details_view_model.dart';
 import '../../shared/main_scaffold.dart';
 import '../../shared/product_selection_component.dart';
 
+enum PricingMode { add, edit }
+
 class PricingDetailsScreen extends StatelessWidget {
   final Pricing pricing;
+  final PricingMode mode;
 
-  const PricingDetailsScreen({super.key, required this.pricing});
+  const PricingDetailsScreen({
+    super.key,
+    required this.pricing,
+    this.mode = PricingMode.edit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,26 +27,33 @@ class PricingDetailsScreen extends StatelessWidget {
 
     // Reset edit mode when entering the screen
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      appBarViewModel.resetEditMode();
+      if (mode == PricingMode.edit) appBarViewModel.resetEditMode();
     });
+
     return Consumer<AppBarViewModel>(
       builder: (context, appBarViewModel, child) {
         return MainScaffold(
-          title: 'تفاصيل التسعير',
-          showEditIcon: true,
-          showDeleteIcon: true,
+          title:
+              mode == PricingMode.add ? 'إضافة تسعير جديد' : 'تفاصيل التسعير',
+          showEditIcon: mode == PricingMode.edit,
+          showDeleteIcon: mode == PricingMode.edit,
+          showSaveIcon: mode == PricingMode.add,
           bottomSelectedIndex: -1,
           onSavePressed: () async {
-            if (appBarViewModel.isEditing) {
+            if (mode == PricingMode.edit && appBarViewModel.isEditing) {
               await Provider.of<PricingDetailsViewModel>(context, listen: false)
-                  .savePricing(context);
+                  .updatePricing(context);
               appBarViewModel.toggleEditMode();
               Navigator.pop(context, 'updated');
             } else {
-              appBarViewModel.toggleEditMode();
+              await Provider.of<PricingDetailsViewModel>(context, listen: false)
+                  .savePricing(context);
+              Navigator.pop(
+                  context, mode == PricingMode.add ? 'added' : 'updated');
             }
           },
-          deleteDocInfo: ['pricing', pricing.pricingID],
+          deleteDocInfo:
+              mode == PricingMode.edit ? ['pricing', pricing.pricingID] : null,
           body: _buildBody(context, appBarViewModel),
         );
       },
@@ -54,7 +69,9 @@ class PricingDetailsScreen extends StatelessWidget {
         children: [
           _buildFieldRow(
             "رقم التسعير",
-            viewModel.pricing.pricingID,
+            mode == PricingMode.edit
+                ? viewModel.pricing.pricingID
+                : viewModel.pricingID,
             isEditable: false,
             appBarViewModel: appBarViewModel,
           ),
@@ -69,10 +86,34 @@ class PricingDetailsScreen extends StatelessWidget {
             appBarViewModel: appBarViewModel,
           ),
           const SizedBox(height: 20),
-          appBarViewModel.isEditing
-              ? _buildUserDropdown(context, viewModel)
+          appBarViewModel.isEditing || mode == PricingMode.add
+              ? DropdownSearchComponent<User>(
+                  label: 'اسم الشخص',
+                  hintText: 'اختر الشخص',
+                  items: viewModel.filteredUserOptions,
+                  displayValue: (user) => user.fullName,
+                  idValue: (user) => user.id,
+                  initialValue: viewModel.selectedUserID != null
+                      ? viewModel.getUserNameByID(viewModel.selectedUserID)
+                      : null,
+                  onItemSelected: (selectedUserID) {
+                    viewModel.setUserID(selectedUserID);
+                  },
+                  onSearch: (query) {
+                    viewModel.filterUsers(query);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      (context as Element).markNeedsBuild();
+                    });
+                  },
+                  onReset: () {
+                    viewModel.resetUserOptions();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      (context as Element).markNeedsBuild();
+                    });
+                  },
+                )
               : _buildFieldRow(
-                  "اسم المستخدم",
+                  "اسم الشخص",
                   viewModel.userOptions
                       .firstWhere((u) => u.id == viewModel.selectedUserID,
                           orElse: () => User(
@@ -87,8 +128,14 @@ class PricingDetailsScreen extends StatelessWidget {
                 ),
           const SizedBox(height: 10),
           _buildTotalsRow(context, viewModel),
-          const SizedBox(height: 10),
-          if (appBarViewModel.isEditing)
+          const SizedBox(height: 25),
+          _buildFieldRow(
+            "أسماء المنتجات",
+            '',
+            isEditable: false,
+            appBarViewModel: appBarViewModel,
+          ),
+          if (mode == PricingMode.add || appBarViewModel.isEditing)
             _buildAddProductButton(viewModel, context),
           const SizedBox(height: 10),
           Expanded(
@@ -180,49 +227,6 @@ class PricingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildUserDropdown(
-      BuildContext context, PricingDetailsViewModel viewModel) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Text(
-          'اسم الشخص: ',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: DropdownButton<String>(
-              value: viewModel.selectedUserID,
-              hint: const Text('اختر الشخص'),
-              items: viewModel.userOptions.map((user) {
-                return DropdownMenuItem(
-                  value: user.id,
-                  child: Text(user.fullName),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  viewModel.setUserID(value);
-                }
-              },
-              isExpanded: true,
-              underline: const SizedBox(),
-              dropdownColor: Colors.white,
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildProductList(BuildContext context,
       PricingDetailsViewModel viewModel, AppBarViewModel appBarViewModel) {
     return ListView.builder(
@@ -233,7 +237,7 @@ class PricingDetailsScreen extends StatelessWidget {
         return ProductSelectionComponent(
           productOptions: viewModel.productOptions,
           productData: product,
-          isEditable: appBarViewModel.isEditing,
+          isEditable: mode == PricingMode.add || appBarViewModel.isEditing,
           onProductChanged: (updatedProduct) {
             viewModel.updateProductData(index, updatedProduct);
           },

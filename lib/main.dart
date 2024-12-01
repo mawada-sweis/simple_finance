@@ -5,7 +5,6 @@ import 'package:simple_finance/app_routes.dart';
 import 'package:simple_finance/models/pricing_model.dart';
 import 'package:simple_finance/services/navigation_service.dart';
 import 'package:simple_finance/view_models/app_bar_view_model.dart';
-import 'package:simple_finance/view_models/pricing/add_pricing_view_model.dart';
 import 'package:simple_finance/view_models/pricing/pricing_details_view_model.dart';
 import 'package:simple_finance/view_models/pricing/pricing_view_model.dart';
 import 'package:simple_finance/view_models/product/product_details_view_model.dart';
@@ -38,7 +37,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserDetailsViewModel()),
         ChangeNotifierProvider(create: (_) => ProductDetailViewModel()),
         ChangeNotifierProvider(create: (_) => PricingViewModel()),
-        ChangeNotifierProvider(create: (_) => AddPricingViewModel()),
         ChangeNotifierProvider(create: (_) => PricingDetailsViewModel(pricing: Pricing as Pricing)),
       ],
       child: MaterialApp(
