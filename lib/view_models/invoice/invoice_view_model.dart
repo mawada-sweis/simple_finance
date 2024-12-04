@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_finance/models/invoice.dart';
+import 'package:simple_finance/models/invoice_model.dart';
 import 'package:simple_finance/models/product_model.dart';
 import 'package:simple_finance/models/user_model.dart';
 import '../../services/database_service.dart';

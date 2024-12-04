@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:simple_finance/app_routes.dart';
-import 'package:simple_finance/models/invoice.dart';
+import 'package:simple_finance/models/invoice_model.dart';
 import 'package:simple_finance/models/pricing_model.dart';
 import 'package:simple_finance/services/navigation_service.dart';
 import 'package:simple_finance/view_models/app_bar_view_model.dart';

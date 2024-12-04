@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_finance/models/invoice.dart';
+import 'package:simple_finance/models/invoice_model.dart';
 import 'package:simple_finance/view_models/invoice/invoice_details_view_model.dart';
 import 'package:simple_finance/view_models/invoice/invoice_view_model.dart';
 import 'package:simple_finance/views/screens/invoice/invoice_details_screen.dart';

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:simple_finance/models/invoice.dart';
+import 'package:simple_finance/models/invoice_model.dart';
 import 'package:simple_finance/models/pricing_model.dart';
 import 'package:simple_finance/models/user_model.dart';
 import '../models/product_model.dart';
