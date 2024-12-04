@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import '../../models/pricing_model.dart';
+import 'package:simple_finance/models/invoice.dart';
 import '../../models/user_model.dart';
 import '../../models/product_model.dart';
 import '../../services/database_service.dart';
 import '../../views/shared/product_selection_component.dart';
 
-class PricingDetailsViewModel extends ChangeNotifier {
+class InvoiceDetailsViewModel extends ChangeNotifier {
   var logger = Logger();
   final DatabaseService _databaseService = DatabaseService();
-  final Pricing pricing;
+  final Invoice invoice;
 
-  String pricingID = '';
+  String invoiceID = '';
   String? selectedUserID;
   double totalSalesPrice = 0.0;
   double totalDiscount = 0.0;
@@ -22,19 +22,19 @@ class PricingDetailsViewModel extends ChangeNotifier {
   List<Product> productOptions = [];
   List<User> filteredUserOptions = [];
 
-  PricingDetailsViewModel({required this.pricing}) {
+  InvoiceDetailsViewModel({required this.invoice}) {
     _initialize();
   }
 
   Future<void> _initialize() async {
     try {
-      pricingID = await _generatePricingID();
+      invoiceID = await _generateInvoiceID();
       await _fetchUserOptions();
       await _fetchProductOptions();
       filteredUserOptions = List.from(userOptions);
       _initializeFields();
     } catch (e) {
-      logger.e('Error initializing PricingDetailsViewModel: $e');
+      logger.e('Error initializing InvoiceDetailsViewModel: $e');
     } finally {
       isLoading = false;
       notifyListeners();
@@ -49,8 +49,8 @@ class PricingDetailsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> _generatePricingID() async {
-    final nextID = await _databaseService.getLastDocID('pricing');
+  Future<String> _generateInvoiceID() async {
+    final nextID = await _databaseService.getLastDocID('invoice');
     String currentID = nextID != null ? nextID.padLeft(3, '0') : '000';
     return currentID;
   }
@@ -78,12 +78,12 @@ class PricingDetailsViewModel extends ChangeNotifier {
   }
 
   void _initializeFields() {
-    selectedUserID = pricing.userID;
+    selectedUserID = invoice.userID;
 
-    productSelections = List.generate(pricing.productsID.length, (index) {
-      final productID = pricing.productsID[index];
-      final discount = pricing.productDiscounts[index];
-      final quantity = pricing.productQuantities[index];
+    productSelections = List.generate(invoice.productsID.length, (index) {
+      final productID = invoice.productsID[index];
+      final discount = invoice.productDiscounts[index];
+      final quantity = invoice.productQuantities[index];
 
       final product = productOptions.firstWhere((p) => p.id == productID);
 
@@ -170,7 +170,7 @@ class PricingDetailsViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> updatePricing(BuildContext context) async {
+  Future<void> updateInvoice(BuildContext context) async {
     if (selectedUserID == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -188,21 +188,21 @@ class PricingDetailsViewModel extends ChangeNotifier {
       );
       return;
     }
-    pricing.userID = selectedUserID!;
-    pricing.productsID = productSelections.map((p) => p.productID).toList();
-    pricing.productQuantities =
+    invoice.userID = selectedUserID!;
+    invoice.productsID = productSelections.map((p) => p.productID).toList();
+    invoice.productQuantities =
         productSelections.map((p) => p.quantity).toList();
-    pricing.productDiscounts =
+    invoice.productDiscounts =
         productSelections.map((p) => p.discount).toList();
-    pricing.updatedDate = DateTime.now();
+    invoice.updatedDate = DateTime.now();
 
-    await _databaseService.updatePricing(pricing);
+    await _databaseService.updateInvoice(invoice);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('تم حفظ التعديلات بنجاح')),
     );
   }
 
-  Future<void> savePricing(BuildContext context) async {
+  Future<void> saveInvoice(BuildContext context) async {
     if (selectedUserID == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -221,8 +221,8 @@ class PricingDetailsViewModel extends ChangeNotifier {
       return;
     }
 
-    final newPricing = Pricing(
-      pricingID: pricingID,
+    final newInvoice = Invoice(
+      invoiceID: invoiceID,
       userID: selectedUserID!,
       productsID: productSelections.map((p) => p.productID).toList(),
       productQuantities: productSelections.map((p) => p.quantity).toList(),
@@ -231,7 +231,7 @@ class PricingDetailsViewModel extends ChangeNotifier {
       updatedDate: DateTime.now(),
     );
 
-    await _databaseService.addPricing(newPricing);
+    await _databaseService.addInvoice(newInvoice);
     resetFields();
     notifyListeners();
   }

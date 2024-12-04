@@ -49,6 +49,11 @@ class MenuComponent extends StatelessWidget {
             title: const Text('التسعيرات'),
             onTap: () => navigationService.navigateToScreen(context, 3),
           ),
+          ListTile(
+            leading: const Icon(Icons.people),
+            title: const Text('الفواتير'),
+            onTap: () => navigationService.navigateToScreen(context, 4),
+          ),
         ],
       ),
     );

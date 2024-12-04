@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_finance/views/screens/invoice/invoice_screen.dart';
 import 'package:simple_finance/views/screens/pricing/pricing_screen.dart';
 import 'package:simple_finance/views/screens/user/users_screen.dart';
 import '../views/screens/home_page_screen.dart';
@@ -10,11 +11,13 @@ class AppRoutes {
   static const String products = '/products';
   static const String users = '/users';
   static const String pricing = '/pricing';
+  static const String invoice = '/invoice';
 
   static Map<String, WidgetBuilder> routes = {
     home: (context) => const HomeScreen(),
     users: (context) => const UsersScreen(),
     pricing: (context) => const PricingScreen(),
+    invoice: (context) => const InvoiceScreen(),
   };
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

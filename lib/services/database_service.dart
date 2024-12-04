@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:simple_finance/models/invoice.dart';
 import 'package:simple_finance/models/pricing_model.dart';
 import 'package:simple_finance/models/user_model.dart';
 import '../models/product_model.dart';
@@ -136,8 +137,8 @@ class DatabaseService {
     }
   }
 
-  Future<String?> getLastPricingID() async {
-    final query = await _firestore.collection('pricing').get();
+  Future<String?> getLastDocID(String collectionName) async {
+    final query = await _firestore.collection(collectionName).get();
     if (query.docs.isEmpty) return null;
     final docID = query.docs.map((doc) => int.tryParse(doc.id) ?? 0).toList();
     final lastID = docID.isNotEmpty ? docID.reduce((a, b) => a > b ? a : b) : 0;
@@ -157,5 +158,19 @@ class DatabaseService {
         .collection('pricing')
         .doc(pricing.pricingID)
         .update(pricing.toFirestore());
+  }
+
+  Future<void> addInvoice(Invoice invoice) async {
+    await _firestore
+        .collection('invoice')
+        .doc(invoice.invoiceID)
+        .set(invoice.toFirestore());
+  }
+
+  Future<void> updateInvoice(Invoice invoice) async {
+    await _firestore
+        .collection('invoice')
+        .doc(invoice.invoiceID)
+        .update(invoice.toFirestore());
   }
 }

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:simple_finance/app_routes.dart';
+import 'package:simple_finance/models/invoice.dart';
 import 'package:simple_finance/models/pricing_model.dart';
 import 'package:simple_finance/services/navigation_service.dart';
 import 'package:simple_finance/view_models/app_bar_view_model.dart';
+import 'package:simple_finance/view_models/invoice/invoice_details_view_model.dart';
+import 'package:simple_finance/view_models/invoice/invoice_view_model.dart';
 import 'package:simple_finance/view_models/pricing/pricing_details_view_model.dart';
 import 'package:simple_finance/view_models/pricing/pricing_view_model.dart';
 import 'package:simple_finance/view_models/product/product_details_view_model.dart';
@@ -38,6 +41,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductDetailViewModel()),
         ChangeNotifierProvider(create: (_) => PricingViewModel()),
         ChangeNotifierProvider(create: (_) => PricingDetailsViewModel(pricing: Pricing as Pricing)),
+        ChangeNotifierProvider(create: (_) => InvoiceViewModel()),
+        ChangeNotifierProvider(create: (_) => InvoiceDetailsViewModel(invoice: Invoice as Invoice)),
       ],
       child: MaterialApp(
         title: 'Finance App',
