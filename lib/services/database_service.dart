@@ -7,7 +7,7 @@ import 'package:logger/logger.dart';
 
 class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    var logger = Logger();
+  var logger = Logger();
 
   Future<List<T>> fetchAllFromCollection<T>(
     String collectionName, {
@@ -59,13 +59,10 @@ class DatabaseService {
   Future<List<Product>> searchProducts(
       String collectionName, String fieldName, String query) async {
     try {
-      QuerySnapshot snapshot = await _firestore
-          .collection(collectionName)
-          .where(fieldName, isGreaterThanOrEqualTo: query)
-          .where(fieldName, isLessThanOrEqualTo: '$query\uf8ff')
-          .get();
+      QuerySnapshot snapshot =
+          await _firestore.collection(collectionName).get();
 
-      return snapshot.docs.map((doc) {
+      List<Product> allProducts = snapshot.docs.map((doc) {
         final data = doc.data() as Map<String, dynamic>;
         return Product(
           id: doc.id,
@@ -85,6 +82,11 @@ class DatabaseService {
           unit: data['unit'] ?? '',
         );
       }).toList();
+
+      return allProducts
+          .where((product) =>
+              product.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     } catch (e) {
       return [];
     }
