@@ -6,7 +6,7 @@ import 'package:simple_finance/views/shared/dropdown_search_component.dart';
 import '../../../models/pricing_model.dart';
 import '../../../view_models/pricing/pricing_details_view_model.dart';
 import '../../shared/main_scaffold.dart';
-import '../../shared/product_selection_component.dart';
+import '../../../view_models/pricing/product_selection_component.dart';
 
 enum PricingMode { add, edit }
 
@@ -127,7 +127,7 @@ class PricingDetailsScreen extends StatelessWidget {
                   appBarViewModel: appBarViewModel,
                 ),
           const SizedBox(height: 10),
-          _buildTotalsRow(context, viewModel),
+          _buildTotalsRow(context, viewModel, appBarViewModel),
           const SizedBox(height: 25),
           _buildFieldRow(
             "أسماء المنتجات",
@@ -158,24 +158,57 @@ class PricingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTotalsRow(
-      BuildContext context, PricingDetailsViewModel viewModel) {
+  Widget _buildTotalsRow(BuildContext context,
+      PricingDetailsViewModel viewModel, AppBarViewModel appBarViewModel) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Column(
           children: [
-            Text('${viewModel.totalSalesPrice} ₪',
-                style: Theme.of(context).textTheme.headlineMedium),
-            Text('إجمالي السعر', style: Theme.of(context).textTheme.bodyLarge),
+            Text('${viewModel.totalPurchasePrice} ₪',
+                    style: Theme.of(context).textTheme.headlineSmall),
+            Text('إجمالي السعر', style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
-        const SizedBox(width: 30),
+        const SizedBox(width: 20),
         Column(
           children: [
-            Text('${viewModel.totalDiscount} ₪',
-                style: Theme.of(context).textTheme.headlineMedium),
-            Text('إجمالي الخصم', style: Theme.of(context).textTheme.bodyLarge),
+            appBarViewModel.isEditing || mode == PricingMode.add
+                ? SizedBox(
+                    width: 100,
+                    child: TextField(
+                      controller: TextEditingController(
+                          text: viewModel.salePrice.toString()),
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(color: Colors.black),
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 8),
+                      ),
+
+                      onSubmitted: (value) {
+                        viewModel.updateSalePrice(
+                            double.tryParse(value) ?? viewModel.salePrice);
+                      },
+                    ),
+                  )
+                : Text('${viewModel.salePrice} ₪',
+                    style: Theme.of(context).textTheme.headlineSmall),
+            Text('سعر البيع', style: Theme.of(context).textTheme.bodyMedium),
+          ],
+        ),
+        const SizedBox(width: 20),
+        Column(
+          children: [
+            Text('${viewModel.total} ₪',
+                style: Theme.of(context).textTheme.headlineSmall),
+            Text('إجمالي', style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
       ],

@@ -51,17 +51,15 @@ class PricingViewModel extends ChangeNotifier {
 
   List<double> calculateTotal(Pricing pricing) {
     double total = 0.0;
-    double discounts = 0.0;
     for (int i = 0; i < pricing.productsID.length; i++) {
       final productID = pricing.productsID[i];
-      final discount = pricing.productDiscounts[i];
       final product = _products[productID];
       final quantity = pricing.productQuantities[i];
       if (product != null) {
-        total += (product.salePrice - discount) * quantity;
-        discounts += discount;
+        total += product.purchasePrice * quantity;
       }
     }
-    return [total, discounts];
+    total = pricing.salePrice - total;
+    return [total, pricing.salePrice];
   }
 }

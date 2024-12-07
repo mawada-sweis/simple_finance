@@ -49,7 +49,7 @@ class PricingScreenState extends State<PricingScreen> {
                     userID: '',
                     productsID: [],
                     productQuantities: [],
-                    productDiscounts: [],
+                    salePrice: 0.0,
                     createdDate: DateTime.now(),
                     updatedDate: DateTime.now(),
                   ),
@@ -60,7 +60,7 @@ class PricingScreenState extends State<PricingScreen> {
                     userID: '',
                     productsID: [],
                     productQuantities: [],
-                    productDiscounts: [],
+                    salePrice: 0.0,
                     createdDate: DateTime.now(),
                     updatedDate: DateTime.now(),
                   ),
@@ -106,11 +106,11 @@ class PricingScreenState extends State<PricingScreen> {
 
                               return EntityCard(
                                 title: "الاسم: $userName",
-                                secoundaryTitle: 'المجموع: ${totals[0]}',
+                                secoundaryTitle: 'سعر البيع: ${totals[1]}',
                                 additional:
                                     'التاريخ: ${pricing.createdDate.toLocal().toIso8601String().split('T')[0]}',
                                 secoundaryAdditional:
-                                    'مجموع الخصم: ${totals[1]}',
+                                    'الربح: ${totals[0]}',
                                 onTap: () => _navigateToPricingDetails(
                                     pricing, 'details'),
                               );

@@ -4,7 +4,7 @@ import '../../models/pricing_model.dart';
 import '../../models/user_model.dart';
 import '../../models/product_model.dart';
 import '../../services/database_service.dart';
-import '../../views/shared/product_selection_component.dart';
+import 'product_selection_component.dart';
 
 class PricingDetailsViewModel extends ChangeNotifier {
   var logger = Logger();
@@ -13,8 +13,9 @@ class PricingDetailsViewModel extends ChangeNotifier {
 
   String pricingID = '';
   String? selectedUserID;
-  double totalSalesPrice = 0.0;
-  double totalDiscount = 0.0;
+  double totalPurchasePrice = 0.0;
+  double salePrice = 0.0;
+  double total = 0.0;
   bool isLoading = true;
 
   List<ProductSelectionData> productSelections = [];
@@ -43,9 +44,15 @@ class PricingDetailsViewModel extends ChangeNotifier {
 
   void resetFields() {
     selectedUserID = null;
-    totalSalesPrice = 0.0;
-    totalDiscount = 0.0;
+    totalPurchasePrice = 0.0;
+    total = 0.0;
     productSelections.clear();
+    notifyListeners();
+  }
+
+  void updateSalePrice(double newPrice) {
+    salePrice = newPrice;
+    _calculateTotals();
     notifyListeners();
   }
 
@@ -79,22 +86,18 @@ class PricingDetailsViewModel extends ChangeNotifier {
 
   void _initializeFields() {
     selectedUserID = pricing.userID;
-
+    salePrice = pricing.salePrice;
     productSelections = List.generate(pricing.productsID.length, (index) {
       final productID = pricing.productsID[index];
-      final discount = pricing.productDiscounts[index];
       final quantity = pricing.productQuantities[index];
-
       final product = productOptions.firstWhere((p) => p.id == productID);
 
       return ProductSelectionData(
         productID: product.id,
         productName: product.name,
         purchasePrice: product.purchasePrice,
-        salePrice: product.salePrice,
-        discount: discount,
         quantity: quantity,
-        total: (product.salePrice - discount) * quantity,
+        total: product.purchasePrice * quantity,
       );
     });
 
@@ -141,8 +144,6 @@ class PricingDetailsViewModel extends ChangeNotifier {
       productID: '',
       productName: '',
       purchasePrice: 0.0,
-      salePrice: 0.0,
-      discount: 0.0,
       quantity: 1,
       total: 0.0,
     ));
@@ -162,12 +163,11 @@ class PricingDetailsViewModel extends ChangeNotifier {
   }
 
   void _calculateTotals() {
-    totalSalesPrice = 0.0;
-    totalDiscount = 0.0;
+    totalPurchasePrice = 0.0;
     for (var product in productSelections) {
-      totalSalesPrice += product.total;
-      totalDiscount += product.discount;
+      totalPurchasePrice += product.total;
     }
+    total = salePrice - totalPurchasePrice;
   }
 
   Future<void> updatePricing(BuildContext context) async {
@@ -192,8 +192,6 @@ class PricingDetailsViewModel extends ChangeNotifier {
     pricing.productsID = productSelections.map((p) => p.productID).toList();
     pricing.productQuantities =
         productSelections.map((p) => p.quantity).toList();
-    pricing.productDiscounts =
-        productSelections.map((p) => p.discount).toList();
     pricing.updatedDate = DateTime.now();
 
     await _databaseService.updatePricing(pricing);
@@ -226,7 +224,7 @@ class PricingDetailsViewModel extends ChangeNotifier {
       userID: selectedUserID!,
       productsID: productSelections.map((p) => p.productID).toList(),
       productQuantities: productSelections.map((p) => p.quantity).toList(),
-      productDiscounts: productSelections.map((p) => p.discount).toList(),
+      salePrice: salePrice,
       createdDate: DateTime.now(),
       updatedDate: DateTime.now(),
     );

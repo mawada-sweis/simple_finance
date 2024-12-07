@@ -5,7 +5,7 @@ class Pricing {
   String userID;
   List<String> productsID;
   List<int> productQuantities;
-  List<double> productDiscounts;
+  double salePrice;
   DateTime createdDate;
   DateTime? updatedDate;
 
@@ -14,7 +14,7 @@ class Pricing {
     required this.userID,
     required this.productsID,
     required this.productQuantities,
-    required this.productDiscounts,
+    required this.salePrice,
     required this.createdDate,
     this.updatedDate,
   });
@@ -26,12 +26,7 @@ class Pricing {
       userID: data['userID'] ?? '',
       productsID: List<String>.from(data['productsID'] ?? []),
       productQuantities: List<int>.from(data['productQuantities'] ?? []),
-      productDiscounts: (data['productDiscounts'] as List<dynamic>?)
-              ?.map((value) => (value is num)
-                  ? value.toDouble()
-                  : double.tryParse(value.toString()) ?? 0.0)
-              .toList() ??
-          [],
+      salePrice: (data['salePrice'] as num).toDouble(),
       createdDate: (data['createdDate'] as Timestamp).toDate(),
       updatedDate: data['updatedDate'] != null
           ? (data['updatedDate'] as Timestamp).toDate()
@@ -45,7 +40,7 @@ class Pricing {
       'userID': userID,
       'productsID': productsID,
       'productQuantities': productQuantities,
-      'productDiscounts': productDiscounts,
+      'salePrice': salePrice,
       'createdDate': createdDate,
       'updatedDate': updatedDate,
     };

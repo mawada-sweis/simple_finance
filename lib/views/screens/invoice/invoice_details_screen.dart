@@ -6,7 +6,7 @@ import 'package:simple_finance/view_models/app_bar_view_model.dart';
 import 'package:simple_finance/view_models/invoice/invoice_details_view_model.dart';
 import 'package:simple_finance/views/shared/dropdown_search_component.dart';
 import '../../shared/main_scaffold.dart';
-import '../../shared/product_selection_component.dart';
+import '../../../view_models/invoice/product_selection_component.dart';
 
 enum InvoiceMode { add, edit }
 
@@ -34,7 +34,7 @@ class InvoiceDetailsScreen extends StatelessWidget {
       builder: (context, appBarViewModel, child) {
         return MainScaffold(
           title:
-              mode == InvoiceMode.add ? 'إضافة تسعير جديد' : 'تفاصيل التسعير',
+              mode == InvoiceMode.add ? 'إضافة فاتورة جديد' : 'تفاصيل الفاتورة',
           showEditIcon: mode == InvoiceMode.edit,
           showDeleteIcon: mode == InvoiceMode.edit,
           showSaveIcon: mode == InvoiceMode.add,

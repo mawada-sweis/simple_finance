@@ -4,7 +4,7 @@ import 'package:simple_finance/models/invoice_model.dart';
 import '../../models/user_model.dart';
 import '../../models/product_model.dart';
 import '../../services/database_service.dart';
-import '../../views/shared/product_selection_component.dart';
+import 'product_selection_component.dart';
 
 class InvoiceDetailsViewModel extends ChangeNotifier {
   var logger = Logger();
