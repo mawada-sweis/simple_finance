@@ -10,6 +10,11 @@ class AppBarViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetEditMode() {
+    isEditing = false;
+    notifyListeners();
+  }
+
   void handleReturn(BuildContext context) {
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();

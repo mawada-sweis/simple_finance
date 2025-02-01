@@ -23,7 +23,7 @@ class UserDetailScreen extends StatelessWidget {
             title: 'معلومات الشخص',
             showEditIcon: true,
             showDeleteIcon: true,
-            bottomSelectedIndex: 0,
+            bottomSelectedIndex: -1,
             onSavePressed: () async {
               await viewModel.saveChanges(context);
               appBarViewModel.toggleEditMode();

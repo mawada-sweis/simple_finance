@@ -13,6 +13,12 @@ class NavigationService extends ChangeNotifier {
       case 2:
         Navigator.pushReplacementNamed(context, AppRoutes.users);
         break;
+      case 3:
+        Navigator.pushReplacementNamed(context, AppRoutes.pricing);
+        break;
+      case 4:
+        Navigator.pushReplacementNamed(context, AppRoutes.invoice);
+        break;
       default:
         break;
     }
