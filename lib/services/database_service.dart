@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:simple_finance/models/invoice_model.dart';
 import 'package:simple_finance/models/pricing_model.dart';
+import 'package:simple_finance/models/transaction_model.dart';
 import 'package:simple_finance/models/user_model.dart';
 import '../models/product_model.dart';
 import 'package:logger/logger.dart';
@@ -174,5 +175,59 @@ class DatabaseService {
         .collection('invoice')
         .doc(invoice.invoiceID)
         .update(invoice.toFirestore());
+  }
+
+    // Fetch all transactions
+  Future<List<TransactionModel>> fetchTransactions() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('transactions').get();
+      return snapshot.docs.map((doc) => TransactionModel.fromMap(doc.data() as Map<String, dynamic>, doc.id)).toList();
+    } catch (e) {
+      throw Exception("Error fetching transactions: $e");
+    }
+  }
+
+  // Create a new transaction
+  Future<void> createTransaction(TransactionModel transaction) async {
+    try {
+      await _firestore.collection('transactions').add(transaction.toMap());
+    } catch (e) {
+      throw Exception("Error creating transaction: $e");
+    }
+  }
+
+  // Delete a transaction by trans ID
+  Future<void> deleteTransaction(String transID) async {
+    try {
+      await _firestore.collection('transactions').doc(transID).delete();
+    } catch (e) {
+      throw Exception("Error deleting transaction: $e");
+    }
+  }
+
+  // Delete all transactions of a specific invoice
+  //NEED UPDATE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  Future<void> deleteTransactionsByInvoiceID(String invoiceID) async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('transactions')
+          .where('invoiceID', isEqualTo: invoiceID)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      throw Exception("Error deleting invoice transactions: $e");
+    }
+  }
+
+  // Update a transaction
+  Future<void> updateTransaction(TransactionModel transaction) async {
+    try {
+      await _firestore.collection('transactions').doc(transaction.transID).update(transaction.toMap());
+    } catch (e) {
+      throw Exception("Error updating transaction: $e");
+    }
   }
 }

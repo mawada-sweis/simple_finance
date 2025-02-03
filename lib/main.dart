@@ -12,6 +12,7 @@ import 'package:simple_finance/view_models/pricing/pricing_details_view_model.da
 import 'package:simple_finance/view_models/pricing/pricing_view_model.dart';
 import 'package:simple_finance/view_models/product/product_details_view_model.dart';
 import 'package:simple_finance/view_models/product/product_view_model.dart';
+import 'package:simple_finance/view_models/transaction/transaction_view_model.dart';
 import 'package:simple_finance/view_models/user/users_view_model.dart';
 import 'utils/theme.dart';
 import 'view_models/search_view_model.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PricingDetailsViewModel(pricing: Pricing as Pricing)),
         ChangeNotifierProvider(create: (_) => InvoiceViewModel()),
         ChangeNotifierProvider(create: (_) => InvoiceDetailsViewModel(invoice: Invoice as Invoice)),
+        ChangeNotifierProvider(create: (_) => TransactionViewModel()),
       ],
       child: MaterialApp(
         title: 'Finance App',

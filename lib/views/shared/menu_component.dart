@@ -45,14 +45,19 @@ class MenuComponent extends StatelessWidget {
             onTap: () => navigationService.navigateToScreen(context, 2),
           ),
           ListTile(
-            leading: const Icon(Icons.people),
+            leading: const Icon(Icons.point_of_sale),
             title: const Text('التسعيرات'),
             onTap: () => navigationService.navigateToScreen(context, 3),
           ),
           ListTile(
-            leading: const Icon(Icons.people),
+            leading: const Icon(Icons.receipt),
             title: const Text('الفواتير'),
             onTap: () => navigationService.navigateToScreen(context, 4),
+          ),
+          ListTile(
+            leading: const Icon(Icons.receipt_long),
+            title: const Text('الحركات'),
+            onTap: () => navigationService.navigateToScreen(context, 5),
           ),
         ],
       ),

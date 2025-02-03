@@ -19,6 +19,9 @@ class NavigationService extends ChangeNotifier {
       case 4:
         Navigator.pushReplacementNamed(context, AppRoutes.invoice);
         break;
+      case 5:
+        Navigator.pushReplacementNamed(context, '/transaction');
+        break;
       default:
         break;
     }
